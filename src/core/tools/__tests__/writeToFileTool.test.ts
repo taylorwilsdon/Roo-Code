@@ -343,11 +343,14 @@ describe("writeToFileTool", () => {
 		})
 
 		it("reports user edits with diff feedback", async () => {
+			const userEditsValue = "- old line\n+ new line"
 			mockCline.diffViewProvider.saveChanges.mockResolvedValue({
 				newProblemsMessage: " with warnings",
-				userEdits: "- old line\n+ new line",
+				userEdits: userEditsValue,
 				finalContent: "modified content",
 			})
+			// Manually set the property on the mock instance because the original saveChanges is not called
+			mockCline.diffViewProvider.userEdits = userEditsValue
 
 			await executeWriteFileTool({}, { fileExists: true })
 
