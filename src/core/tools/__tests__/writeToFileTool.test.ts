@@ -141,6 +141,25 @@ describe("writeToFileTool", () => {
 				finalContent: "final content",
 			}),
 			scrollToFirstDiff: jest.fn(),
+			pushToolWriteResult: jest.fn().mockImplementation(async function (
+				this: any,
+				task: any,
+				cwd: string,
+				isNewFile: boolean,
+			) {
+				// Simulate the behavior of pushToolWriteResult
+				if (this.userEdits) {
+					await task.say(
+						"user_feedback_diff",
+						JSON.stringify({
+							tool: isNewFile ? "newFileCreated" : "editedExistingFile",
+							path: "test/path.txt",
+							diff: this.userEdits,
+						}),
+					)
+				}
+				return "Tool result message"
+			}),
 		}
 		mockCline.api = {
 			getModel: jest.fn().mockReturnValue({ id: "claude-3" }),
