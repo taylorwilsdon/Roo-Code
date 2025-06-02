@@ -598,13 +598,23 @@ export class McpHub {
 					}
 					await this.notifyWebviewOfServerChanges()
 				}
+
+				transport.onclose = async () => {
+					const connection = this.findConnection(name, source)
+					if (connection) {
+						connection.server.status = "disconnected"
+					}
+					await this.notifyWebviewOfServerChanges()
+				}
 			} else {
-				// Correctly placed "unsupported type" else block
 				// Should not happen if validateServerConfig is correct
 				throw new Error(`Unsupported MCP server type: ${(configInjected as any).type}`)
 			}
-			// transport.start assignment moved after all type-specific initializations
-			transport.start = async () => {} // No-op now, .connect() won't fail
+
+			// Only override transport.start for stdio transports that have already been started
+			if (configInjected.type === "stdio") {
+				transport.start = async () => {}
+			}
 
 			const connection: McpConnection = {
 				server: {
@@ -625,7 +635,6 @@ export class McpHub {
 			await client.connect(transport)
 			connection.server.status = "connected"
 			connection.server.error = ""
-			connection.server.instructions = client.getInstructions()
 
 			// Initial fetch of tools and resources
 			connection.server.tools = await this.fetchToolsList(name, source)
