@@ -584,39 +584,7 @@ export class ClineProvider
 	}
 
 	public async postMessageToWebview(message: ExtensionMessage) {
-		if (this.view && this.view.webview) {
-			// Determine if this is the sidebar or a tab panel
-			const viewType = "onDidChangeViewState" in this.view ? "tab panel" : "sidebar"
-			const panelActive =
-				"onDidChangeViewState" in this.view ? (this.view as vscode.WebviewPanel).active : undefined // WebviewPanel has 'active', WebviewView does not.
-			console.log(
-				`[ClineProvider] Posting message to webview (${viewType}). Type: ${message.type}. View visible: ${this.view.visible}${panelActive !== undefined ? `, Panel active: ${panelActive}` : ""}`,
-			)
-			try {
-				// The postMessage method on a Webview returns a Thenable<boolean>
-				// which resolves to true if the message was posted successfully.
-				const success = await this.view.webview.postMessage(message)
-				console.log(`[ClineProvider] webview.postMessage call for type '${message.type}' returned: ${success}`)
-				if (!success) {
-					console.warn(
-						`[ClineProvider] webview.postMessage returned false for type '${message.type}', message might not have been delivered to the webview listener.`,
-					)
-				}
-			} catch (error) {
-				console.error(`[ClineProvider] Error during webview.postMessage for type '${message.type}':`, error)
-				// Optionally re-throw or handle as appropriate for your extension's error strategy
-				// throw error;
-			}
-		} else {
-			let reason = "Webview panel (this.view) is not available."
-			if (this.view && !this.view.webview) {
-				reason = "Webview panel (this.view) is available, but this.view.webview is not."
-			} else if (!this.view) {
-				// This case is already covered by the outer if, but for clarity:
-				reason = "Webview panel (this.view) is undefined."
-			}
-			console.error(`[ClineProvider] ${reason} Cannot postMessageToWebview. Message type: ${message.type}`)
-		}
+		await this.view?.webview.postMessage(message)
 	}
 
 	private async getHMRHtmlContent(webview: vscode.Webview): Promise<string> {

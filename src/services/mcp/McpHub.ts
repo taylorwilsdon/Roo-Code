@@ -870,9 +870,6 @@ export class McpHub {
 			}
 			// If server exists with same config, do nothing
 		}
-		console.log(
-			`McpHub.updateServerConnections: About to notify. this.connections has ${this.connections.length} items. Names: ${this.connections.map((c) => c.server.name).join(", ")}`,
-		)
 		await this.notifyWebviewOfServerChanges()
 		if (manageConnectingState) {
 			this.isConnecting = false
@@ -996,7 +993,6 @@ export class McpHub {
 		vscode.window.showInformationMessage(t("common:info.mcp_refreshing_all"))
 
 		try {
-			// Debug: Log servers from config files
 			const globalPath = await this.getMcpSettingsFilePath()
 			let globalServers: Record<string, any> = {}
 			try {
@@ -1004,7 +1000,6 @@ export class McpHub {
 				const globalConfig = JSON.parse(globalContent)
 				globalServers = globalConfig.mcpServers || {}
 				const globalServerNames = Object.keys(globalServers)
-				console.log("Global MCP servers from file:", globalServerNames)
 				vscode.window.showInformationMessage(
 					t("common:info.mcp_servers_active", {
 						mcpServers: `Global: ${globalServerNames.join(", ") || "none"}`,
@@ -1022,7 +1017,6 @@ export class McpHub {
 					const projectConfig = JSON.parse(projectContent)
 					projectServers = projectConfig.mcpServers || {}
 					const projectServerNames = Object.keys(projectServers)
-					console.log("Project MCP servers from file:", projectServerNames)
 					vscode.window.showInformationMessage(
 						t("common:info.mcp_servers_active", {
 							mcpServers: `Project: ${projectServerNames.join(", ") || "none"}`,
