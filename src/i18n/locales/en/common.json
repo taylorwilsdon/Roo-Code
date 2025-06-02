@@ -73,6 +73,9 @@
 		"mcp_server_connected": "{{serverName}} MCP server connected",
 		"mcp_server_deleted": "Deleted MCP server: {{serverName}}",
 		"mcp_server_not_found": "Server \"{{serverName}}\" not found in configuration",
+		"mcp_already_refreshing": "MCP servers are already refreshing.",
+		"mcp_refreshing_all": "Refreshing all MCP servers...",
+		"mcp_all_refreshed": "All MCP servers have been refreshed.",
 		"custom_storage_path_set": "Custom storage path set: {{path}}",
 		"default_storage_path": "Reverted to using default storage path",
 		"settings_imported": "Settings imported successfully."

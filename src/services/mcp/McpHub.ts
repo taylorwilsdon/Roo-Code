@@ -978,6 +978,31 @@ export class McpHub {
 		this.isConnecting = false
 	}
 
+	public async refreshAllConnections(): Promise<void> {
+		if (this.isConnecting) {
+			vscode.window.showInformationMessage(t("common:info.mcp_already_refreshing"))
+			return
+		}
+		this.isConnecting = true
+		vscode.window.showInformationMessage(t("common:info.mcp_refreshing_all"))
+
+		const connectionsToRefresh = [...this.connections]
+		for (const connection of connectionsToRefresh) {
+			try {
+				// It's important to use the server's actual source for restarting
+				await this.restartConnection(connection.server.name, connection.server.source || "global")
+			} catch (error) {
+				this.showErrorMessage(
+					`Failed to refresh MCP server ${connection.server.name} during full refresh`,
+					error,
+				)
+			}
+		}
+		await this.notifyWebviewOfServerChanges() // Ensure UI updates after all refreshes
+		this.isConnecting = false
+		vscode.window.showInformationMessage(t("common:info.mcp_all_refreshed"))
+	}
+
 	private async notifyWebviewOfServerChanges(): Promise<void> {
 		// Get global server order from settings file
 		const settingsPath = await this.getMcpSettingsFilePath()

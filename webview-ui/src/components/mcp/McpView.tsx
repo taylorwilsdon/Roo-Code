@@ -138,6 +138,15 @@ const McpView = ({ onDone }: McpViewProps) => {
 								<span className="codicon codicon-edit" style={{ marginRight: "6px" }}></span>
 								{t("mcp:editProjectMCP")}
 							</Button>
+							<Button
+								variant="secondary"
+								style={{ flex: 1 }}
+								onClick={() => {
+									vscode.postMessage({ type: "refreshAllMcpServers" })
+								}}>
+								<span className="codicon codicon-refresh" style={{ marginRight: "6px" }}></span>
+								{t("mcp:refreshMCP")}
+							</Button>
 						</div>
 						<div
 							style={{
