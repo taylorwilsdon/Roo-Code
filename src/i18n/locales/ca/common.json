@@ -79,7 +79,11 @@
 		"mcp_server_not_found": "Servidor \"{{serverName}}\" no trobat a la configuració",
 		"custom_storage_path_set": "Ruta d'emmagatzematge personalitzada establerta: {{path}}",
 		"default_storage_path": "S'ha reprès l'ús de la ruta d'emmagatzematge predeterminada",
-		"settings_imported": "Configuració importada correctament."
+		"settings_imported": "Configuració importada correctament.",
+		"mcp_servers_active": "Servidors MCP actius: {{mcpServers}}",
+		"mcp_already_refreshing": "Els servidors MCP ja s'estan actualitzant.",
+		"mcp_refreshing_all": "Actualitzant tots els servidors MCP...",
+		"mcp_all_refreshed": "Tots els servidors MCP han estat actualitzats."
 	},
 	"answers": {
 		"yes": "Sí",

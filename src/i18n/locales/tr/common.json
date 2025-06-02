@@ -75,7 +75,11 @@
 		"mcp_server_not_found": "Yapılandırmada \"{{serverName}}\" sunucusu bulunamadı",
 		"custom_storage_path_set": "Özel depolama yolu ayarlandı: {{path}}",
 		"default_storage_path": "Varsayılan depolama yoluna geri dönüldü",
-		"settings_imported": "Ayarlar başarıyla içe aktarıldı."
+		"settings_imported": "Ayarlar başarıyla içe aktarıldı.",
+		"mcp_servers_active": "Aktif MCP Sunucuları: {{mcpServers}}",
+		"mcp_already_refreshing": "MCP sunucuları zaten yenileniyor.",
+		"mcp_refreshing_all": "Tüm MCP sunucuları yenileniyor...",
+		"mcp_all_refreshed": "Tüm MCP sunucuları yenilendi."
 	},
 	"answers": {
 		"yes": "Evet",

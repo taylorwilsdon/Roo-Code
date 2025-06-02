@@ -54,5 +54,6 @@
 	"serverStatus": {
 		"retrying": "重試中...",
 		"retryConnection": "重試連線"
-	}
+	},
+	"refreshMCP": "重新整理 MCP 伺服器"
 }

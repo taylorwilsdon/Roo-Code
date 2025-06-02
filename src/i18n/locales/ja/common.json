@@ -75,7 +75,11 @@
 		"mcp_server_not_found": "サーバー\"{{serverName}}\"が設定内に見つかりません",
 		"custom_storage_path_set": "カスタムストレージパスが設定されました：{{path}}",
 		"default_storage_path": "デフォルトのストレージパスに戻りました",
-		"settings_imported": "設定が正常にインポートされました。"
+		"settings_imported": "設定が正常にインポートされました。",
+		"mcp_servers_active": "アクティブなMCPサーバー: {{mcpServers}}",
+		"mcp_already_refreshing": "MCPサーバーはすでに更新中です。",
+		"mcp_refreshing_all": "すべてのMCPサーバーを更新しています...",
+		"mcp_all_refreshed": "すべてのMCPサーバーが更新されました。"
 	},
 	"answers": {
 		"yes": "はい",

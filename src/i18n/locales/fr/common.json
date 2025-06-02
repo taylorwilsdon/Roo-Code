@@ -75,7 +75,11 @@
 		"mcp_server_not_found": "Serveur \"{{serverName}}\" introuvable dans la configuration",
 		"custom_storage_path_set": "Chemin de stockage personnalisé défini : {{path}}",
 		"default_storage_path": "Retour au chemin de stockage par défaut",
-		"settings_imported": "Paramètres importés avec succès."
+		"settings_imported": "Paramètres importés avec succès.",
+		"mcp_servers_active": "Serveurs MCP actifs : {{mcpServers}}",
+		"mcp_already_refreshing": "Les serveurs MCP sont déjà en cours de rafraîchissement.",
+		"mcp_refreshing_all": "Rafraîchissement de tous les serveurs MCP...",
+		"mcp_all_refreshed": "Tous les serveurs MCP ont été rafraîchis."
 	},
 	"answers": {
 		"yes": "Oui",

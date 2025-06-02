@@ -75,7 +75,11 @@
 		"mcp_server_not_found": "Сервер \"{{serverName}}\" не найден в конфигурации",
 		"custom_storage_path_set": "Установлен пользовательский путь хранения: {{path}}",
 		"default_storage_path": "Возвращено использование пути хранения по умолчанию",
-		"settings_imported": "Настройки успешно импортированы."
+		"settings_imported": "Настройки успешно импортированы.",
+		"mcp_servers_active": "Активные MCP серверы: {{mcpServers}}",
+		"mcp_already_refreshing": "MCP серверы уже обновляются.",
+		"mcp_refreshing_all": "Обновление всех MCP серверов...",
+		"mcp_all_refreshed": "Все MCP серверы обновлены."
 	},
 	"answers": {
 		"yes": "Да",

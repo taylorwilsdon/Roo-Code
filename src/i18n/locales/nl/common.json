@@ -75,7 +75,11 @@
 		"mcp_server_not_found": "Server \"{{serverName}}\" niet gevonden in configuratie",
 		"custom_storage_path_set": "Aangepast opslagpad ingesteld: {{path}}",
 		"default_storage_path": "Terug naar standaard opslagpad",
-		"settings_imported": "Instellingen succesvol geïmporteerd."
+		"settings_imported": "Instellingen succesvol geïmporteerd.",
+		"mcp_servers_active": "Actieve MCP-servers: {{mcpServers}}",
+		"mcp_already_refreshing": "MCP-servers worden al vernieuwd.",
+		"mcp_refreshing_all": "Alle MCP-servers worden vernieuwd...",
+		"mcp_all_refreshed": "Alle MCP-servers zijn vernieuwd."
 	},
 	"answers": {
 		"yes": "Ja",

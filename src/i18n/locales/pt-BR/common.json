@@ -79,7 +79,11 @@
 		"mcp_server_not_found": "Servidor \"{{serverName}}\" não encontrado na configuração",
 		"custom_storage_path_set": "Caminho de armazenamento personalizado definido: {{path}}",
 		"default_storage_path": "Retornado ao caminho de armazenamento padrão",
-		"settings_imported": "Configurações importadas com sucesso."
+		"settings_imported": "Configurações importadas com sucesso.",
+		"mcp_servers_active": "Servidores MCP ativos: {{mcpServers}}",
+		"mcp_already_refreshing": "Os servidores MCP já estão atualizando.",
+		"mcp_refreshing_all": "Atualizando todos os servidores MCP...",
+		"mcp_all_refreshed": "Todos os servidores MCP foram atualizados."
 	},
 	"answers": {
 		"yes": "Sim",

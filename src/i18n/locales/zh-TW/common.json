@@ -75,7 +75,11 @@
 		"mcp_server_not_found": "在設定中沒有找到伺服器\"{{serverName}}\"",
 		"custom_storage_path_set": "自訂儲存路徑已設定：{{path}}",
 		"default_storage_path": "已恢復使用預設儲存路徑",
-		"settings_imported": "設定已成功匯入。"
+		"settings_imported": "設定已成功匯入。",
+		"mcp_servers_active": "活動的 MCP 伺服器: {{mcpServers}}",
+		"mcp_already_refreshing": "MCP 伺服器已在重新整理中。",
+		"mcp_refreshing_all": "正在重新整理所有 MCP 伺服器...",
+		"mcp_all_refreshed": "所有 MCP 伺服器已重新整理。"
 	},
 	"answers": {
 		"yes": "是",

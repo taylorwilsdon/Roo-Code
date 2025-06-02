@@ -54,5 +54,6 @@
 	"serverStatus": {
 		"retrying": "Opnieuw proberen...",
 		"retryConnection": "Verbinding opnieuw proberen"
-	}
+	},
+	"refreshMCP": "MCP-servers vernieuwen"
 }

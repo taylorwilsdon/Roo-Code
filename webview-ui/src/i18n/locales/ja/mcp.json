@@ -54,5 +54,6 @@
 	"serverStatus": {
 		"retrying": "再試行中...",
 		"retryConnection": "再接続"
-	}
+	},
+	"refreshMCP": "MCPサーバーを更新"
 }

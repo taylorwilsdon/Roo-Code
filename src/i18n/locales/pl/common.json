@@ -75,7 +75,11 @@
 		"mcp_server_not_found": "Serwer \"{{serverName}}\" nie znaleziony w konfiguracji",
 		"custom_storage_path_set": "Ustawiono niestandardową ścieżkę przechowywania: {{path}}",
 		"default_storage_path": "Wznowiono używanie domyślnej ścieżki przechowywania",
-		"settings_imported": "Ustawienia zaimportowane pomyślnie."
+		"settings_imported": "Ustawienia zaimportowane pomyślnie.",
+		"mcp_servers_active": "Aktywne serwery MCP: {{mcpServers}}",
+		"mcp_already_refreshing": "Serwery MCP są już odświeżane.",
+		"mcp_refreshing_all": "Odświeżanie wszystkich serwerów MCP...",
+		"mcp_all_refreshed": "Wszystkie serwery MCP zostały odświeżone."
 	},
 	"answers": {
 		"yes": "Tak",

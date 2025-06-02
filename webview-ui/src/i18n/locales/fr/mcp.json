@@ -54,5 +54,6 @@
 	"serverStatus": {
 		"retrying": "Nouvelle tentative...",
 		"retryConnection": "Réessayer la connexion"
-	}
+	},
+	"refreshMCP": "Rafraîchir les serveurs MCP"
 }
