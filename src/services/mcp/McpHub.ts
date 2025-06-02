@@ -398,7 +398,7 @@ export class McpHub {
 			const result = McpSettingsSchema.safeParse(config)
 
 			if (result.success) {
-				await this.updateServerConnections(result.data.mcpServers || {}, source)
+				await this.updateServerConnections(result.data.mcpServers || {}, source, false)
 			} else {
 				const errorMessages = result.error.errors
 					.map((err) => `${err.path.join(".")}: ${err.message}`)
@@ -409,7 +409,7 @@ export class McpHub {
 				if (source === "global") {
 					// Still try to connect with the raw config, but show warnings
 					try {
-						await this.updateServerConnections(config.mcpServers || {}, source)
+						await this.updateServerConnections(config.mcpServers || {}, source, false)
 					} catch (error) {
 						this.showErrorMessage(`Failed to initialize ${source} MCP servers with raw config`, error)
 					}
@@ -816,8 +816,11 @@ export class McpHub {
 	async updateServerConnections(
 		newServers: Record<string, any>,
 		source: "global" | "project" = "global",
+		manageConnectingState: boolean = true,
 	): Promise<void> {
-		this.isConnecting = true
+		if (manageConnectingState) {
+			this.isConnecting = true
+		}
 		this.removeAllFileWatchers()
 		// Filter connections by source
 		const currentConnections = this.connections.filter(
@@ -867,8 +870,13 @@ export class McpHub {
 			}
 			// If server exists with same config, do nothing
 		}
+		console.log(
+			`McpHub.updateServerConnections: About to notify. this.connections has ${this.connections.length} items. Names: ${this.connections.map((c) => c.server.name).join(", ")}`,
+		)
 		await this.notifyWebviewOfServerChanges()
-		this.isConnecting = false
+		if (manageConnectingState) {
+			this.isConnecting = false
+		}
 	}
 
 	private setupFileWatcher(
@@ -983,27 +991,96 @@ export class McpHub {
 			vscode.window.showInformationMessage(t("common:info.mcp_already_refreshing"))
 			return
 		}
+
 		this.isConnecting = true
 		vscode.window.showInformationMessage(t("common:info.mcp_refreshing_all"))
 
-		const connectionsToRefresh = [...this.connections]
-		for (const connection of connectionsToRefresh) {
+		try {
+			// Debug: Log servers from config files
+			const globalPath = await this.getMcpSettingsFilePath()
+			let globalServers: Record<string, any> = {}
 			try {
-				// It's important to use the server's actual source for restarting
-				await this.restartConnection(connection.server.name, connection.server.source || "global")
-			} catch (error) {
-				this.showErrorMessage(
-					`Failed to refresh MCP server ${connection.server.name} during full refresh`,
-					error,
+				const globalContent = await fs.readFile(globalPath, "utf-8")
+				const globalConfig = JSON.parse(globalContent)
+				globalServers = globalConfig.mcpServers || {}
+				const globalServerNames = Object.keys(globalServers)
+				console.log("Global MCP servers from file:", globalServerNames)
+				vscode.window.showInformationMessage(
+					t("common:info.mcp_servers_active", {
+						mcpServers: `Global: ${globalServerNames.join(", ") || "none"}`,
+					}),
 				)
+			} catch (error) {
+				console.log("Error reading global MCP config:", error)
 			}
+
+			const projectPath = await this.getProjectMcpPath()
+			let projectServers: Record<string, any> = {}
+			if (projectPath) {
+				try {
+					const projectContent = await fs.readFile(projectPath, "utf-8")
+					const projectConfig = JSON.parse(projectContent)
+					projectServers = projectConfig.mcpServers || {}
+					const projectServerNames = Object.keys(projectServers)
+					console.log("Project MCP servers from file:", projectServerNames)
+					vscode.window.showInformationMessage(
+						t("common:info.mcp_servers_active", {
+							mcpServers: `Project: ${projectServerNames.join(", ") || "none"}`,
+						}),
+					)
+				} catch (error) {
+					console.log("Error reading project MCP config:", error)
+				}
+			}
+
+			// Log current connections before refresh
+			console.log(
+				"Current connections before refresh:",
+				this.connections.map((c) => ({
+					name: c.server.name,
+					source: c.server.source,
+					status: c.server.status,
+				})),
+			)
+
+			// Clear all existing connections first
+			const existingConnections = [...this.connections]
+			for (const conn of existingConnections) {
+				await this.deleteConnection(conn.server.name, conn.server.source)
+			}
+
+			// Re-initialize all servers from scratch
+			// This ensures proper initialization including fetching tools, resources, etc.
+			await this.initializeMcpServers("global")
+			await this.initializeMcpServers("project")
+
+			// Log connections after refresh
+			console.log(
+				"Current connections after refresh:",
+				this.connections.map((c) => ({
+					name: c.server.name,
+					source: c.server.source,
+					status: c.server.status,
+				})),
+			)
+
+			// Small delay to ensure all async operations are complete
+			await delay(100)
+
+			// Ensure webview is notified after all connections are established
+			await this.notifyWebviewOfServerChanges()
+
+			vscode.window.showInformationMessage(t("common:info.mcp_all_refreshed"))
+		} catch (error) {
+			this.showErrorMessage("Failed to refresh MCP servers", error)
+		} finally {
+			this.isConnecting = false
 		}
-		await this.notifyWebviewOfServerChanges() // Ensure UI updates after all refreshes
-		this.isConnecting = false
-		vscode.window.showInformationMessage(t("common:info.mcp_all_refreshed"))
 	}
 
 	private async notifyWebviewOfServerChanges(): Promise<void> {
+		console.log("notifyWebviewOfServerChanges called")
+
 		// Get global server order from settings file
 		const settingsPath = await this.getMcpSettingsFilePath()
 		const content = await fs.readFile(settingsPath, "utf-8")
@@ -1044,11 +1121,65 @@ export class McpHub {
 			return aIsGlobal ? 1 : -1
 		})
 
+		console.log(
+			"Sending servers to webview:",
+			sortedConnections.map((c) => ({
+				name: c.server.name,
+				source: c.server.source,
+				status: c.server.status,
+			})),
+		)
+
 		// Send sorted servers to webview
-		await this.providerRef.deref()?.postMessageToWebview({
-			type: "mcpServers",
-			mcpServers: sortedConnections.map((connection) => connection.server),
-		})
+		// Try to get the currently visible ClineProvider instance first
+		let targetProvider: ClineProvider | undefined = undefined
+		try {
+			// ClineProvider.getInstance() can focus the view if not visible,
+			// and returns a Promise<ClineProvider | undefined>
+			const instancePromise = ClineProvider.getInstance()
+			if (instancePromise) {
+				targetProvider = await instancePromise
+			}
+			console.log("[McpHub] Provider from ClineProvider.getInstance():", !!targetProvider)
+		} catch (error) {
+			console.error("[McpHub] Error calling ClineProvider.getInstance():", error)
+		}
+
+		// Fallback to the providerRef if getInstance didn't yield a provider
+		if (!targetProvider) {
+			console.log("[McpHub] Falling back to providerRef for ClineProvider instance.")
+			targetProvider = this.providerRef.deref()
+			console.log("[McpHub] Provider from this.providerRef.deref():", !!targetProvider)
+		}
+
+		console.log("[McpHub] Final target provider for posting message:", !!targetProvider)
+		if (targetProvider) {
+			const serversToSend = sortedConnections.map((connection) => connection.server)
+			console.log("[McpHub] Full server data being sent:", JSON.stringify(serversToSend, null, 2))
+
+			const message = {
+				type: "mcpServers" as const,
+				mcpServers: serversToSend,
+			}
+			console.log("[McpHub] Sending message object:", message)
+
+			try {
+				await targetProvider.postMessageToWebview(message)
+				// Note: The success log from ClineProvider.postMessageToWebview itself is now more indicative
+				// of actual dispatch success. This log here just confirms McpHub tried.
+				console.log(
+					"[McpHub] Attempted to send mcpServers message via targetProvider with",
+					serversToSend.length,
+					"servers",
+				)
+			} catch (error) {
+				console.error("[McpHub] Error calling targetProvider.postMessageToWebview:", error)
+			}
+		} else {
+			console.error(
+				"[McpHub] No target provider available (neither from getInstance nor providerRef) - cannot send mcpServers message to webview",
+			)
+		}
 	}
 
 	public async toggleServerDisabled(

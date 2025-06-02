@@ -47,6 +47,16 @@ const McpView = ({ onDone }: McpViewProps) => {
 
 	const { t } = useAppTranslation()
 
+	// Debug logging
+	React.useEffect(() => {
+		console.log(
+			"McpView: servers updated",
+			servers.length,
+			"servers:",
+			servers.map((s) => ({ name: s.name, source: s.source })),
+		)
+	}, [servers])
+
 	return (
 		<Tab>
 			<TabHeader className="flex justify-between items-center">

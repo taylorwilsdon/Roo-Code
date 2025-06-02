@@ -72,6 +72,7 @@
 		"mcp_server_restarting": "Restarting {{serverName}} MCP server...",
 		"mcp_server_connected": "{{serverName}} MCP server connected",
 		"mcp_server_deleted": "Deleted MCP server: {{serverName}}",
+		"mcp_servers_active": "Active MCP Servers: {{mcpServers}}",
 		"mcp_server_not_found": "Server \"{{serverName}}\" not found in configuration",
 		"mcp_already_refreshing": "MCP servers are already refreshing.",
 		"mcp_refreshing_all": "Refreshing all MCP servers...",

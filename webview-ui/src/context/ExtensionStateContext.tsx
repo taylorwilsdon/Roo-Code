@@ -1,5 +1,4 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react"
-import { useEvent } from "react-use"
 
 import {
 	type ProviderSettings,
@@ -239,6 +238,7 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 	const handleMessage = useCallback(
 		(event: MessageEvent) => {
 			const message: ExtensionMessage = event.data
+			console.log("[WebViewContext] Received message:", message) // Log all incoming messages
 			switch (message.type) {
 				case "state": {
 					const newState = message.state!
@@ -276,6 +276,11 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 					break
 				}
 				case "mcpServers": {
+					console.log(
+						"ExtensionStateContext: Received mcpServers message",
+						message.mcpServers?.length,
+						"servers",
+					)
 					setMcpServers(message.mcpServers ?? [])
 					break
 				}
@@ -293,10 +298,16 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 				}
 			}
 		},
-		[setListApiConfigMeta],
+		[setListApiConfigMeta], // All setters used (setState, setMcpServers, etc.) are stable
 	)
 
-	useEvent("message", handleMessage)
+	// Replace useEvent with a standard useEffect for managing the message listener
+	useEffect(() => {
+		window.addEventListener("message", handleMessage)
+		return () => {
+			window.removeEventListener("message", handleMessage)
+		}
+	}, [handleMessage]) // Re-subscribe if handleMessage instance changes (it shouldn't with useCallback(..., []))
 
 	useEffect(() => {
 		vscode.postMessage({ type: "webviewDidLaunch" })
