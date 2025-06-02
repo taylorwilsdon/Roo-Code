@@ -1027,16 +1027,6 @@ export class McpHub {
 				}
 			}
 
-			// Log current connections before refresh
-			console.log(
-				"Current connections before refresh:",
-				this.connections.map((c) => ({
-					name: c.server.name,
-					source: c.server.source,
-					status: c.server.status,
-				})),
-			)
-
 			// Clear all existing connections first
 			const existingConnections = [...this.connections]
 			for (const conn of existingConnections) {
@@ -1048,20 +1038,8 @@ export class McpHub {
 			await this.initializeMcpServers("global")
 			await this.initializeMcpServers("project")
 
-			// Log connections after refresh
-			console.log(
-				"Current connections after refresh:",
-				this.connections.map((c) => ({
-					name: c.server.name,
-					source: c.server.source,
-					status: c.server.status,
-				})),
-			)
-
-			// Small delay to ensure all async operations are complete
 			await delay(100)
 
-			// Ensure webview is notified after all connections are established
 			await this.notifyWebviewOfServerChanges()
 
 			vscode.window.showInformationMessage(t("common:info.mcp_all_refreshed"))
@@ -1115,15 +1093,6 @@ export class McpHub {
 			return aIsGlobal ? 1 : -1
 		})
 
-		console.log(
-			"Sending servers to webview:",
-			sortedConnections.map((c) => ({
-				name: c.server.name,
-				source: c.server.source,
-				status: c.server.status,
-			})),
-		)
-
 		// Send sorted servers to webview
 		// Try to get the currently visible ClineProvider instance first
 		let targetProvider: ClineProvider | undefined = undefined
@@ -1134,38 +1103,25 @@ export class McpHub {
 			if (instancePromise) {
 				targetProvider = await instancePromise
 			}
-			console.log("[McpHub] Provider from ClineProvider.getInstance():", !!targetProvider)
-		} catch (error) {
-			console.error("[McpHub] Error calling ClineProvider.getInstance():", error)
-		}
+		} catch (error) {}
 
 		// Fallback to the providerRef if getInstance didn't yield a provider
 		if (!targetProvider) {
-			console.log("[McpHub] Falling back to providerRef for ClineProvider instance.")
 			targetProvider = this.providerRef.deref()
-			console.log("[McpHub] Provider from this.providerRef.deref():", !!targetProvider)
 		}
 
-		console.log("[McpHub] Final target provider for posting message:", !!targetProvider)
 		if (targetProvider) {
 			const serversToSend = sortedConnections.map((connection) => connection.server)
-			console.log("[McpHub] Full server data being sent:", JSON.stringify(serversToSend, null, 2))
 
 			const message = {
 				type: "mcpServers" as const,
 				mcpServers: serversToSend,
 			}
-			console.log("[McpHub] Sending message object:", message)
 
 			try {
 				await targetProvider.postMessageToWebview(message)
 				// Note: The success log from ClineProvider.postMessageToWebview itself is now more indicative
 				// of actual dispatch success. This log here just confirms McpHub tried.
-				console.log(
-					"[McpHub] Attempted to send mcpServers message via targetProvider with",
-					serversToSend.length,
-					"servers",
-				)
 			} catch (error) {
 				console.error("[McpHub] Error calling targetProvider.postMessageToWebview:", error)
 			}

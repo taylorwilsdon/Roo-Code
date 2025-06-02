@@ -238,7 +238,6 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 	const handleMessage = useCallback(
 		(event: MessageEvent) => {
 			const message: ExtensionMessage = event.data
-			console.log("[WebViewContext] Received message:", message) // Log all incoming messages
 			switch (message.type) {
 				case "state": {
 					const newState = message.state!
@@ -276,11 +275,6 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 					break
 				}
 				case "mcpServers": {
-					console.log(
-						"ExtensionStateContext: Received mcpServers message",
-						message.mcpServers?.length,
-						"servers",
-					)
 					setMcpServers(message.mcpServers ?? [])
 					break
 				}
