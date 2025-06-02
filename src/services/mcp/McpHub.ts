@@ -1120,8 +1120,6 @@ export class McpHub {
 
 			try {
 				await targetProvider.postMessageToWebview(message)
-				// Note: The success log from ClineProvider.postMessageToWebview itself is now more indicative
-				// of actual dispatch success. This log here just confirms McpHub tried.
 			} catch (error) {
 				console.error("[McpHub] Error calling targetProvider.postMessageToWebview:", error)
 			}

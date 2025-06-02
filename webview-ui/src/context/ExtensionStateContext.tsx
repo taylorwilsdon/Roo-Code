@@ -292,16 +292,15 @@ export const ExtensionStateContextProvider: React.FC<{ children: React.ReactNode
 				}
 			}
 		},
-		[setListApiConfigMeta], // All setters used (setState, setMcpServers, etc.) are stable
+		[setListApiConfigMeta],
 	)
 
-	// Replace useEvent with a standard useEffect for managing the message listener
 	useEffect(() => {
 		window.addEventListener("message", handleMessage)
 		return () => {
 			window.removeEventListener("message", handleMessage)
 		}
-	}, [handleMessage]) // Re-subscribe if handleMessage instance changes (it shouldn't with useCallback(..., []))
+	}, [handleMessage])
 
 	useEffect(() => {
 		vscode.postMessage({ type: "webviewDidLaunch" })
