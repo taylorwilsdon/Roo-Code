@@ -81,6 +81,8 @@
 		"default_storage_path": "S'ha reprès l'ús de la ruta d'emmagatzematge predeterminada",
 		"settings_imported": "Configuració importada correctament.",
 		"mcp_servers_active": "Servidors MCP actius: {{mcpServers}}",
+		"global_mcp_servers_active": "Servidors MCP globals actius: {{mcpServers}}",
+		"project_mcp_servers_active": "Servidors MCP del projecte actius: {{mcpServers}}",
 		"mcp_already_refreshing": "Els servidors MCP ja s'estan actualitzant.",
 		"mcp_refreshing_all": "Actualitzant tots els servidors MCP...",
 		"mcp_all_refreshed": "Tots els servidors MCP han estat actualitzats."

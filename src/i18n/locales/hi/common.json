@@ -76,7 +76,8 @@
 		"custom_storage_path_set": "कस्टम स्टोरेज पाथ सेट किया गया: {{path}}",
 		"default_storage_path": "डिफ़ॉल्ट स्टोरेज पाथ का उपयोग पुनः शुरू किया गया",
 		"settings_imported": "सेटिंग्स सफलतापूर्वक इम्पोर्ट की गईं.",
-		"mcp_servers_active": "सक्रिय एमसीपी सर्वर: {{mcpServers}}",
+		"global_mcp_servers_active": "सक्रिय वैश्विक एमसीपी सर्वर: {{mcpServers}}",
+		"project_mcp_servers_active": "सक्रिय परियोजना एमसीपी सर्वर: {{mcpServers}}",
 		"mcp_already_refreshing": "एमसीपी सर्वर पहले से ही रीफ्रेश हो रहे हैं।",
 		"mcp_refreshing_all": "सभी एमसीपी सर्वर रीफ्रेश हो रहे हैं...",
 		"mcp_all_refreshed": "सभी एमसीपी सर्वर रीफ्रेश हो गए हैं।"

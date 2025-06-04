@@ -76,7 +76,8 @@
 		"custom_storage_path_set": "カスタムストレージパスが設定されました：{{path}}",
 		"default_storage_path": "デフォルトのストレージパスに戻りました",
 		"settings_imported": "設定が正常にインポートされました。",
-		"mcp_servers_active": "アクティブなMCPサーバー: {{mcpServers}}",
+		"global_mcp_servers_active": "アクティブなグローバルMCPサーバー: {{mcpServers}}",
+		"project_mcp_servers_active": "アクティブなプロジェクトMCPサーバー: {{mcpServers}}",
 		"mcp_already_refreshing": "MCPサーバーはすでに更新中です。",
 		"mcp_refreshing_all": "すべてのMCPサーバーを更新しています...",
 		"mcp_all_refreshed": "すべてのMCPサーバーが更新されました。"

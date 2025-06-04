@@ -76,7 +76,8 @@
 		"custom_storage_path_set": "Установлен пользовательский путь хранения: {{path}}",
 		"default_storage_path": "Возвращено использование пути хранения по умолчанию",
 		"settings_imported": "Настройки успешно импортированы.",
-		"mcp_servers_active": "Активные MCP серверы: {{mcpServers}}",
+		"global_mcp_servers_active": "Активные глобальные MCP серверы: {{mcpServers}}",
+		"project_mcp_servers_active": "Активные MCP серверы проекта: {{mcpServers}}",
 		"mcp_already_refreshing": "MCP серверы уже обновляются.",
 		"mcp_refreshing_all": "Обновление всех MCP серверов...",
 		"mcp_all_refreshed": "Все MCP серверы обновлены."

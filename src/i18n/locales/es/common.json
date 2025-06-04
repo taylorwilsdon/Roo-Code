@@ -76,7 +76,8 @@
 		"custom_storage_path_set": "Ruta de almacenamiento personalizada establecida: {{path}}",
 		"default_storage_path": "Se ha vuelto a usar la ruta de almacenamiento predeterminada",
 		"settings_imported": "Configuración importada correctamente.",
-		"mcp_servers_active": "Servidores MCP activos: {{mcpServers}}",
+		"global_mcp_servers_active": "Servidores MCP globales activos: {{mcpServers}}",
+		"project_mcp_servers_active": "Servidores MCP del proyecto activos: {{mcpServers}}",
 		"mcp_already_refreshing": "Los servidores MCP ya se están actualizando.",
 		"mcp_refreshing_all": "Actualizando todos los servidores MCP...",
 		"mcp_all_refreshed": "Todos los servidores MCP han sido actualizados."

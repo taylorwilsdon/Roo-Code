@@ -76,7 +76,8 @@
 		"custom_storage_path_set": "Đã thiết lập đường dẫn lưu trữ tùy chỉnh: {{path}}",
 		"default_storage_path": "Đã quay lại sử dụng đường dẫn lưu trữ mặc định",
 		"settings_imported": "Cài đặt đã được nhập thành công.",
-		"mcp_servers_active": "Các máy chủ MCP đang hoạt động: {{mcpServers}}",
+		"global_mcp_servers_active": "Các máy chủ MCP toàn cầu đang hoạt động: {{mcpServers}}",
+		"project_mcp_servers_active": "Các máy chủ MCP dự án đang hoạt động: {{mcpServers}}",
 		"mcp_already_refreshing": "Các máy chủ MCP đã đang làm mới.",
 		"mcp_refreshing_all": "Đang làm mới tất cả các máy chủ MCP...",
 		"mcp_all_refreshed": "Tất cả các máy chủ MCP đã được làm mới."

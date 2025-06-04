@@ -1001,8 +1001,8 @@ export class McpHub {
 				globalServers = globalConfig.mcpServers || {}
 				const globalServerNames = Object.keys(globalServers)
 				vscode.window.showInformationMessage(
-					t("common:info.mcp_servers_active", {
-						mcpServers: `Global: ${globalServerNames.join(", ") || "none"}`,
+					t("common:info.global_mcp_servers_active", {
+						mcpServers: `${globalServerNames.join(", ") || "none"}`,
 					}),
 				)
 			} catch (error) {
@@ -1018,8 +1018,8 @@ export class McpHub {
 					projectServers = projectConfig.mcpServers || {}
 					const projectServerNames = Object.keys(projectServers)
 					vscode.window.showInformationMessage(
-						t("common:info.mcp_servers_active", {
-							mcpServers: `Project: ${projectServerNames.join(", ") || "none"}`,
+						t("common:info.project_mcp_servers_active", {
+							mcpServers: `${projectServerNames.join(", ") || "none"}`,
 						}),
 					)
 				} catch (error) {

@@ -76,7 +76,8 @@
 		"custom_storage_path_set": "Benutzerdefinierter Speicherpfad festgelegt: {{path}}",
 		"default_storage_path": "Auf Standardspeicherpfad zurückgesetzt",
 		"settings_imported": "Einstellungen erfolgreich importiert.",
-		"mcp_servers_active": "Aktive MCP-Server: {{mcpServers}}",
+		"global_mcp_servers_active": "Aktive globale MCP-Server: {{mcpServers}}",
+		"project_mcp_servers_active": "Aktive Projekt-MCP-Server: {{mcpServers}}",
 		"mcp_already_refreshing": "MCP-Server werden bereits aktualisiert.",
 		"mcp_refreshing_all": "Alle MCP-Server werden aktualisiert...",
 		"mcp_all_refreshed": "Alle MCP-Server wurden aktualisiert."

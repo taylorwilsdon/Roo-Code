@@ -76,7 +76,8 @@
 		"custom_storage_path_set": "사용자 지정 저장 경로 설정됨: {{path}}",
 		"default_storage_path": "기본 저장 경로로 되돌아갔습니다",
 		"settings_imported": "설정이 성공적으로 가져와졌습니다.",
-		"mcp_servers_active": "활성 MCP 서버: {{mcpServers}}",
+		"global_mcp_servers_active": "활성 글로벌 MCP 서버: {{mcpServers}}",
+		"project_mcp_servers_active": "활성 프로젝트 MCP 서버: {{mcpServers}}",
 		"mcp_already_refreshing": "MCP 서버가 이미 새로 고쳐지고 있습니다.",
 		"mcp_refreshing_all": "모든 MCP 서버를 새로 고치는 중...",
 		"mcp_all_refreshed": "모든 MCP 서버가 새로 고쳐졌습니다."
