@@ -262,14 +262,14 @@ export class McpHub {
 				const errorMessages = result.error.errors
 					.map((err) => `${err.path.join(".")}: ${err.message}`)
 					.join("\n")
-				vscode.window.showErrorMessage(t("common:errors.invalid_mcp_settings_validation", { errorMessages }))
+				vscode.window.showErrorMessage(t("mcp:errors.invalid_settings_validation", { errorMessages }))
 				return
 			}
 
 			await this.updateServerConnections(result.data.mcpServers || {}, source)
 		} catch (error) {
 			if (error instanceof SyntaxError) {
-				vscode.window.showErrorMessage(t("common:errors.invalid_mcp_settings_format"))
+				vscode.window.showErrorMessage(t("mcp:errors.invalid_settings_format"))
 			} else {
 				this.showErrorMessage(`Failed to process ${source} MCP settings change`, error)
 			}
@@ -298,7 +298,7 @@ export class McpHub {
 			try {
 				config = JSON.parse(content)
 			} catch (parseError) {
-				const errorMessage = t("common:errors.invalid_mcp_settings_syntax")
+				const errorMessage = t("mcp:errors.invalid_settings_syntax")
 				console.error(errorMessage, parseError)
 				vscode.window.showErrorMessage(errorMessage)
 				return
@@ -314,10 +314,10 @@ export class McpHub {
 					.map((err) => `${err.path.join(".")}: ${err.message}`)
 					.join("\n")
 				console.error("Invalid project MCP settings format:", errorMessages)
-				vscode.window.showErrorMessage(t("common:errors.invalid_mcp_settings_validation", { errorMessages }))
+				vscode.window.showErrorMessage(t("mcp:errors.invalid_settings_validation", { errorMessages }))
 			}
 		} catch (error) {
-			this.showErrorMessage(t("common:errors.failed_update_project_mcp"), error)
+			this.showErrorMessage(t("mcp:errors.failed_update_project"), error)
 		}
 	}
 
@@ -404,7 +404,7 @@ export class McpHub {
 					.map((err) => `${err.path.join(".")}: ${err.message}`)
 					.join("\n")
 				console.error(`Invalid ${source} MCP settings format:`, errorMessages)
-				vscode.window.showErrorMessage(t("common:errors.invalid_mcp_settings_validation", { errorMessages }))
+				vscode.window.showErrorMessage(t("mcp:errors.invalid_settings_validation", { errorMessages }))
 
 				if (source === "global") {
 					// Still try to connect with the raw config, but show warnings
@@ -417,7 +417,7 @@ export class McpHub {
 			}
 		} catch (error) {
 			if (error instanceof SyntaxError) {
-				const errorMessage = t("common:errors.invalid_mcp_settings_syntax")
+				const errorMessage = t("mcp:errors.invalid_settings_syntax")
 				console.error(errorMessage, error)
 				vscode.window.showErrorMessage(errorMessage)
 			} else {
@@ -955,7 +955,7 @@ export class McpHub {
 		const connection = this.findConnection(serverName, source)
 		const config = connection?.server.config
 		if (config) {
-			vscode.window.showInformationMessage(t("common:info.mcp_server_restarting", { serverName }))
+			vscode.window.showInformationMessage(t("mcp:info.server_restarting", { serverName }))
 			connection.server.status = "connecting"
 			connection.server.error = ""
 			await this.notifyWebviewOfServerChanges()
@@ -970,7 +970,7 @@ export class McpHub {
 
 					// Try to connect again using validated config
 					await this.connectToServer(serverName, validatedConfig, connection.server.source || "global")
-					vscode.window.showInformationMessage(t("common:info.mcp_server_connected", { serverName }))
+					vscode.window.showInformationMessage(t("mcp:info.server_connected", { serverName }))
 				} catch (validationError) {
 					this.showErrorMessage(`Invalid configuration for MCP server "${serverName}"`, validationError)
 				}
@@ -985,12 +985,12 @@ export class McpHub {
 
 	public async refreshAllConnections(): Promise<void> {
 		if (this.isConnecting) {
-			vscode.window.showInformationMessage(t("common:info.mcp_already_refreshing"))
+			vscode.window.showInformationMessage(t("mcp:info.already_refreshing"))
 			return
 		}
 
 		this.isConnecting = true
-		vscode.window.showInformationMessage(t("common:info.mcp_refreshing_all"))
+		vscode.window.showInformationMessage(t("mcp:info.refreshing_all"))
 
 		try {
 			const globalPath = await this.getMcpSettingsFilePath()
@@ -1001,7 +1001,7 @@ export class McpHub {
 				globalServers = globalConfig.mcpServers || {}
 				const globalServerNames = Object.keys(globalServers)
 				vscode.window.showInformationMessage(
-					t("common:info.global_mcp_servers_active", {
+					t("mcp:info.global_servers_active", {
 						mcpServers: `${globalServerNames.join(", ") || "none"}`,
 					}),
 				)
@@ -1018,7 +1018,7 @@ export class McpHub {
 					projectServers = projectConfig.mcpServers || {}
 					const projectServerNames = Object.keys(projectServers)
 					vscode.window.showInformationMessage(
-						t("common:info.project_mcp_servers_active", {
+						t("mcp:info.project_servers_active", {
 							mcpServers: `${projectServerNames.join(", ") || "none"}`,
 						}),
 					)
@@ -1042,7 +1042,7 @@ export class McpHub {
 
 			await this.notifyWebviewOfServerChanges()
 
-			vscode.window.showInformationMessage(t("common:info.mcp_all_refreshed"))
+			vscode.window.showInformationMessage(t("mcp:info.all_refreshed"))
 		} catch (error) {
 			this.showErrorMessage("Failed to refresh MCP servers", error)
 		} finally {
@@ -1319,9 +1319,9 @@ export class McpHub {
 				// Update server connections with the correct source
 				await this.updateServerConnections(config.mcpServers, serverSource)
 
-				vscode.window.showInformationMessage(t("common:info.mcp_server_deleted", { serverName }))
+				vscode.window.showInformationMessage(t("mcp:info.server_deleted", { serverName }))
 			} else {
-				vscode.window.showWarningMessage(t("common:info.mcp_server_not_found", { serverName }))
+				vscode.window.showWarningMessage(t("mcp:info.server_not_found", { serverName }))
 			}
 		} catch (error) {
 			this.showErrorMessage(`Failed to delete MCP server ${serverName}`, error)

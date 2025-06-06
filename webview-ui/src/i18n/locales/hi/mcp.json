@@ -28,7 +28,6 @@
 	"emptyState": {
 		"noTools": "कोई टूल नहीं मिला",
 		"noResources": "कोई संसाधन नहीं मिला",
-		"noLogs": "कोई लॉग नहीं मिला",
 		"noErrors": "कोई त्रुटि नहीं मिली"
 	},
 	"networkTimeout": {

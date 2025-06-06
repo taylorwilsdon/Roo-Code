@@ -28,7 +28,6 @@
 	"emptyState": {
 		"noTools": "Araç bulunamadı",
 		"noResources": "Kaynak bulunamadı",
-		"noLogs": "Kayıt bulunamadı",
 		"noErrors": "Hata bulunamadı"
 	},
 	"networkTimeout": {

@@ -28,7 +28,6 @@
 	"emptyState": {
 		"noTools": "ツールが見つかりません",
 		"noResources": "リソースが見つかりません",
-		"noLogs": "ログが見つかりません",
 		"noErrors": "エラーが見つかりません"
 	},
 	"networkTimeout": {

@@ -28,7 +28,6 @@
 	"emptyState": {
 		"noTools": "Keine Tools gefunden",
 		"noResources": "Keine Ressourcen gefunden",
-		"noLogs": "Keine Protokolle gefunden",
 		"noErrors": "Keine Fehler gefunden"
 	},
 	"networkTimeout": {

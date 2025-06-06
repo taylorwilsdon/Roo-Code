@@ -483,7 +483,7 @@ export const webviewMessageHandler = async (provider: ClineProvider, message: We
 
 				await openFile(mcpPath)
 			} catch (error) {
-				vscode.window.showErrorMessage(t("common:errors.create_mcp_json", { error: `${error}` }))
+				vscode.window.showErrorMessage(t("mcp:errors.create_json", { error: `${error}` }))
 			}
 
 			break
