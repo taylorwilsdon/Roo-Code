@@ -16,6 +16,7 @@
 		"project_servers_active": "活动的项目 MCP 服务器: {{mcpServers}}",
 		"already_refreshing": "MCP 服务器已在刷新中。",
 		"refreshing_all": "正在刷新所有 MCP 服务器...",
-		"all_refreshed": "所有 MCP 服务器已刷新。"
+		"all_refreshed": "所有 MCP 服务器已刷新。",
+		"project_config_deleted": "项目MCP配置文件已删除。所有项目MCP服务器已断开连接。"
 	}
 }

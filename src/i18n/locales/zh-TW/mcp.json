@@ -16,6 +16,7 @@
 		"project_servers_active": "活動的專案 MCP 伺服器: {{mcpServers}}",
 		"already_refreshing": "MCP 伺服器已在重新整理中。",
 		"refreshing_all": "正在重新整理所有 MCP 伺服器...",
-		"all_refreshed": "所有 MCP 伺服器已重新整理。"
+		"all_refreshed": "所有 MCP 伺服器已重新整理。",
+		"project_config_deleted": "專案MCP設定檔案已刪除。所有專案MCP伺服器已斷開連接。"
 	}
 }

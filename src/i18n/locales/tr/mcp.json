@@ -16,6 +16,7 @@
 		"project_servers_active": "Aktif Proje MCP Sunucuları: {{mcpServers}}",
 		"already_refreshing": "MCP sunucuları zaten yenileniyor.",
 		"refreshing_all": "Tüm MCP sunucuları yenileniyor...",
-		"all_refreshed": "Tüm MCP sunucuları yenilendi."
+		"all_refreshed": "Tüm MCP sunucuları yenilendi.",
+		"project_config_deleted": "Proje MCP yapılandırma dosyası silindi. Tüm proje MCP sunucuları bağlantısı kesildi."
 	}
 }

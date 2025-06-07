@@ -16,6 +16,7 @@
 		"project_servers_active": "アクティブなプロジェクトMCPサーバー: {{mcpServers}}",
 		"already_refreshing": "MCPサーバーはすでに更新中です。",
 		"refreshing_all": "すべてのMCPサーバーを更新しています...",
-		"all_refreshed": "すべてのMCPサーバーが更新されました。"
+		"all_refreshed": "すべてのMCPサーバーが更新されました。",
+		"project_config_deleted": "プロジェクトMCP設定ファイルが削除されました。すべてのプロジェクトMCPサーバーが切断されました。"
 	}
 }

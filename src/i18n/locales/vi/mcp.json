@@ -16,6 +16,7 @@
 		"project_servers_active": "Các máy chủ MCP dự án đang hoạt động: {{mcpServers}}",
 		"already_refreshing": "Các máy chủ MCP đã đang làm mới.",
 		"refreshing_all": "Đang làm mới tất cả các máy chủ MCP...",
-		"all_refreshed": "Tất cả các máy chủ MCP đã được làm mới."
+		"all_refreshed": "Tất cả các máy chủ MCP đã được làm mới.",
+		"project_config_deleted": "Tệp cấu hình MCP của dự án đã bị xóa. Tất cả các máy chủ MCP của dự án đã bị ngắt kết nối."
 	}
 }

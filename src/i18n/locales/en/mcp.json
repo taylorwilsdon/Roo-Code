@@ -15,6 +15,7 @@
 		"project_servers_active": "Active Project MCP Servers: {{mcpServers}}",
 		"already_refreshing": "MCP servers are already refreshing.",
 		"refreshing_all": "Refreshing all MCP servers...",
-		"all_refreshed": "All MCP servers have been refreshed."
+		"all_refreshed": "All MCP servers have been refreshed.",
+		"project_config_deleted": "Project MCP configuration file deleted. All project MCP servers have been disconnected."
 	}
 }

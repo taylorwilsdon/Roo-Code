@@ -16,6 +16,7 @@
 		"project_servers_active": "활성 프로젝트 MCP 서버: {{mcpServers}}",
 		"already_refreshing": "MCP 서버가 이미 새로 고쳐지고 있습니다.",
 		"refreshing_all": "모든 MCP 서버를 새로 고치는 중...",
-		"all_refreshed": "모든 MCP 서버가 새로 고쳐졌습니다."
+		"all_refreshed": "모든 MCP 서버가 새로 고쳐졌습니다.",
+		"project_config_deleted": "프로젝트 MCP 구성 파일이 삭제되었습니다. 모든 프로젝트 MCP 서버가 연결 해제되었습니다."
 	}
 }

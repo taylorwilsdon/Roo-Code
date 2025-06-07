@@ -132,11 +132,12 @@ export class McpHub {
 	connections: McpConnection[] = []
 	isConnecting: boolean = false
 	private refCount: number = 0 // Reference counter for active clients
+	private configChangeDebounceTimers: Map<string, NodeJS.Timeout> = new Map()
 
 	constructor(provider: ClineProvider) {
 		this.providerRef = new WeakRef(provider)
 		this.watchMcpSettingsFile()
-		this.watchProjectMcpFile()
+		this.watchProjectMcpFile().catch(console.error)
 		this.setupWorkspaceFoldersWatcher()
 		this.initializeGlobalMcpServers()
 		this.initializeProjectMcpServers()
@@ -247,15 +248,46 @@ export class McpHub {
 		this.disposables.push(
 			vscode.workspace.onDidChangeWorkspaceFolders(async () => {
 				await this.updateProjectMcpServers()
-				this.watchProjectMcpFile()
+				await this.watchProjectMcpFile()
 			}),
 		)
+	}
+
+	/**
+	 * Debounced wrapper for handling config file changes
+	 */
+	private debounceConfigChange(filePath: string, source: "global" | "project"): void {
+		const key = `${source}-${filePath}`
+
+		// Clear existing timer if any
+		const existingTimer = this.configChangeDebounceTimers.get(key)
+		if (existingTimer) {
+			clearTimeout(existingTimer)
+		}
+
+		// Set new timer
+		const timer = setTimeout(async () => {
+			this.configChangeDebounceTimers.delete(key)
+			await this.handleConfigFileChange(filePath, source)
+		}, 500) // 500ms debounce
+
+		this.configChangeDebounceTimers.set(key, timer)
 	}
 
 	private async handleConfigFileChange(filePath: string, source: "global" | "project"): Promise<void> {
 		try {
 			const content = await fs.readFile(filePath, "utf-8")
-			const config = JSON.parse(content)
+			let config: any
+
+			try {
+				config = JSON.parse(content)
+			} catch (parseError) {
+				const errorMessage = t("mcp:errors.invalid_settings_syntax")
+				console.error(errorMessage, parseError)
+				vscode.window.showErrorMessage(errorMessage)
+				return
+			}
+
 			const result = McpSettingsSchema.safeParse(config)
 
 			if (!result.success) {
@@ -268,22 +300,64 @@ export class McpHub {
 
 			await this.updateServerConnections(result.data.mcpServers || {}, source)
 		} catch (error) {
-			if (error instanceof SyntaxError) {
-				vscode.window.showErrorMessage(t("mcp:errors.invalid_settings_format"))
+			// Check if the error is because the file doesn't exist
+			if (error.code === "ENOENT" && source === "project") {
+				// File was deleted, clean up project MCP servers
+				await this.cleanupProjectMcpServers()
+				await this.notifyWebviewOfServerChanges()
+				vscode.window.showInformationMessage(t("mcp:info.project_config_deleted"))
 			} else {
-				this.showErrorMessage(`Failed to process ${source} MCP settings change`, error)
+				this.showErrorMessage(t("mcp:errors.failed_update_project"), error)
 			}
 		}
 	}
 
-	private watchProjectMcpFile(): void {
+	private async watchProjectMcpFile(): Promise<void> {
+		// Skip if test environment is detected or VSCode APIs are not available
+		if (
+			process.env.NODE_ENV === "test" ||
+			process.env.JEST_WORKER_ID !== undefined ||
+			!vscode.workspace.createFileSystemWatcher
+		) {
+			return
+		}
+
+		// Clean up existing project MCP watcher if it exists
+		if (this.projectMcpWatcher) {
+			this.projectMcpWatcher.dispose()
+			this.projectMcpWatcher = undefined
+		}
+
+		if (!vscode.workspace.workspaceFolders?.length) {
+			return
+		}
+
+		const workspaceFolder = vscode.workspace.workspaceFolders[0]
+		const projectMcpPattern = new vscode.RelativePattern(workspaceFolder, ".roo/mcp.json")
+
+		// Create a file system watcher for the project MCP file pattern
+		this.projectMcpWatcher = vscode.workspace.createFileSystemWatcher(projectMcpPattern)
+
+		// Watch for file changes
+		const changeDisposable = this.projectMcpWatcher.onDidChange((uri) => {
+			this.debounceConfigChange(uri.fsPath, "project")
+		})
+
+		// Watch for file creation
+		const createDisposable = this.projectMcpWatcher.onDidCreate((uri) => {
+			this.debounceConfigChange(uri.fsPath, "project")
+		})
+
+		// Watch for file deletion
+		const deleteDisposable = this.projectMcpWatcher.onDidDelete(async () => {
+			// Clean up all project MCP servers when the file is deleted
+			await this.cleanupProjectMcpServers()
+			await this.notifyWebviewOfServerChanges()
+			vscode.window.showInformationMessage(t("mcp:info.project_config_deleted"))
+		})
+
 		this.disposables.push(
-			vscode.workspace.onDidSaveTextDocument(async (document) => {
-				const projectMcpPath = await this.getProjectMcpPath()
-				if (projectMcpPath && arePathsEqual(document.uri.fsPath, projectMcpPath)) {
-					await this.handleConfigFileChange(projectMcpPath, "project")
-				}
-			}),
+			vscode.Disposable.from(changeDisposable, createDisposable, deleteDisposable, this.projectMcpWatcher),
 		)
 	}
 
@@ -322,13 +396,15 @@ export class McpHub {
 	}
 
 	private async cleanupProjectMcpServers(): Promise<void> {
-		const projectServers = this.connections.filter((conn) => conn.server.source === "project")
+		// Disconnect and remove all project MCP servers
+		const projectConnections = this.connections.filter((conn) => conn.server.source === "project")
 
-		for (const conn of projectServers) {
+		for (const conn of projectConnections) {
 			await this.deleteConnection(conn.server.name, "project")
 		}
 
-		await this.notifyWebviewOfServerChanges()
+		// Clear project servers from the connections list
+		await this.updateServerConnections({}, "project", false)
 	}
 
 	getServers(): McpServer[] {
@@ -374,14 +450,43 @@ export class McpHub {
 	}
 
 	private async watchMcpSettingsFile(): Promise<void> {
+		// Skip if test environment is detected or VSCode APIs are not available
+		if (
+			process.env.NODE_ENV === "test" ||
+			process.env.JEST_WORKER_ID !== undefined ||
+			!vscode.workspace.createFileSystemWatcher
+		) {
+			return
+		}
+
+		// Clean up existing settings watcher if it exists
+		if (this.settingsWatcher) {
+			this.settingsWatcher.dispose()
+			this.settingsWatcher = undefined
+		}
+
 		const settingsPath = await this.getMcpSettingsFilePath()
-		this.disposables.push(
-			vscode.workspace.onDidSaveTextDocument(async (document) => {
-				if (arePathsEqual(document.uri.fsPath, settingsPath)) {
-					await this.handleConfigFileChange(settingsPath, "global")
-				}
-			}),
-		)
+		const settingsUri = vscode.Uri.file(settingsPath)
+		const settingsPattern = new vscode.RelativePattern(path.dirname(settingsPath), path.basename(settingsPath))
+
+		// Create a file system watcher for the global MCP settings file
+		this.settingsWatcher = vscode.workspace.createFileSystemWatcher(settingsPattern)
+
+		// Watch for file changes
+		const changeDisposable = this.settingsWatcher.onDidChange((uri) => {
+			if (arePathsEqual(uri.fsPath, settingsPath)) {
+				this.debounceConfigChange(settingsPath, "global")
+			}
+		})
+
+		// Watch for file creation
+		const createDisposable = this.settingsWatcher.onDidCreate((uri) => {
+			if (arePathsEqual(uri.fsPath, settingsPath)) {
+				this.debounceConfigChange(settingsPath, "global")
+			}
+		})
+
+		this.disposables.push(vscode.Disposable.from(changeDisposable, createDisposable, this.settingsWatcher))
 	}
 
 	private async initializeMcpServers(source: "global" | "project"): Promise<void> {
@@ -1478,6 +1583,13 @@ export class McpHub {
 		}
 		console.log("McpHub: Disposing...")
 		this.isDisposed = true
+
+		// Clear all debounce timers
+		for (const timer of this.configChangeDebounceTimers.values()) {
+			clearTimeout(timer)
+		}
+		this.configChangeDebounceTimers.clear()
+
 		this.removeAllFileWatchers()
 		for (const connection of this.connections) {
 			try {
@@ -1489,6 +1601,11 @@ export class McpHub {
 		this.connections = []
 		if (this.settingsWatcher) {
 			this.settingsWatcher.dispose()
+			this.settingsWatcher = undefined
+		}
+		if (this.projectMcpWatcher) {
+			this.projectMcpWatcher.dispose()
+			this.projectMcpWatcher = undefined
 		}
 		this.disposables.forEach((d) => d.dispose())
 	}
