@@ -52,7 +52,9 @@
 		"condense_not_enough_messages": "Not enough messages to condense context",
 		"condensed_recently": "Context was condensed recently; skipping this attempt",
 		"condense_handler_invalid": "API handler for condensing context is invalid",
-		"condense_context_grew": "Context size increased during condensing; skipping this attempt"
+		"condense_context_grew": "Context size increased during condensing; skipping this attempt",
+		"share_task_failed": "Failed to share task. Please try again.",
+		"share_no_active_task": "No active task to share"
 	},
 	"warnings": {
 		"no_terminal_content": "No terminal content selected",
@@ -64,7 +66,8 @@
 		"history_cleanup": "Cleaned up {{count}} task(s) with missing files from history.",
 		"custom_storage_path_set": "Custom storage path set: {{path}}",
 		"default_storage_path": "Reverted to using default storage path",
-		"settings_imported": "Settings imported successfully."
+		"settings_imported": "Settings imported successfully.",
+		"share_link_copied": "Share link copied to clipboard"
 	},
 	"answers": {
 		"yes": "Yes",
