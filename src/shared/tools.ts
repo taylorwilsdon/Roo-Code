@@ -8,6 +8,7 @@ export type AskApproval = (
 	type: ClineAsk,
 	partialMessage?: string,
 	progressStatus?: ToolProgressStatus,
+	forceApproval?: boolean,
 ) => Promise<boolean>
 
 export type HandleError = (action: string, error: Error) => Promise<void>
@@ -62,6 +63,8 @@ export const toolParamNames = [
 	"start_line",
 	"end_line",
 	"query",
+	"args",
+	"todos",
 ] as const
 
 export type ToolParamName = (typeof toolParamNames)[number]
@@ -142,7 +145,7 @@ export interface AskFollowupQuestionToolUse extends ToolUse {
 
 export interface AttemptCompletionToolUse extends ToolUse {
 	name: "attempt_completion"
-	params: Partial<Pick<Record<ToolParamName, string>, "result" | "command">>
+	params: Partial<Pick<Record<ToolParamName, string>, "result">>
 }
 
 export interface SwitchModeToolUse extends ToolUse {
@@ -186,6 +189,7 @@ export const TOOL_DISPLAY_NAMES: Record<ToolName, string> = {
 	insert_content: "insert content",
 	search_and_replace: "search and replace",
 	codebase_search: "codebase search",
+	update_todo_list: "update todo list",
 } as const
 
 // Define available tool groups.
@@ -224,6 +228,7 @@ export const ALWAYS_AVAILABLE_TOOLS: ToolName[] = [
 	"attempt_completion",
 	"switch_mode",
 	"new_task",
+	"update_todo_list",
 ] as const
 
 export type DiffResult =
@@ -240,6 +245,11 @@ export type DiffResult =
 			}
 			failParts?: DiffResult[]
 	  } & ({ error: string } | { failParts: DiffResult[] }))
+
+export interface DiffItem {
+	content: string
+	startLine?: number
+}
 
 export interface DiffStrategy {
 	/**
@@ -258,12 +268,17 @@ export interface DiffStrategy {
 	/**
 	 * Apply a diff to the original content
 	 * @param originalContent The original file content
-	 * @param diffContent The diff content in the strategy's format
+	 * @param diffContent The diff content in the strategy's format (string for legacy, DiffItem[] for new)
 	 * @param startLine Optional line number where the search block starts. If not provided, searches the entire file.
 	 * @param endLine Optional line number where the search block ends. If not provided, searches the entire file.
 	 * @returns A DiffResult object containing either the successful result or error details
 	 */
-	applyDiff(originalContent: string, diffContent: string, startLine?: number, endLine?: number): Promise<DiffResult>
+	applyDiff(
+		originalContent: string,
+		diffContent: string | DiffItem[],
+		startLine?: number,
+		endLine?: number,
+	): Promise<DiffResult>
 
 	getProgressStatus?(toolUse: ToolUse, result?: any): ToolProgressStatus
 }

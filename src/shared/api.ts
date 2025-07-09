@@ -6,7 +6,7 @@ export type ApiHandlerOptions = Omit<ProviderSettings, "apiProvider">
 
 // RouterName
 
-const routerNames = ["openrouter", "requesty", "glama", "unbound", "litellm"] as const
+const routerNames = ["openrouter", "requesty", "glama", "unbound", "litellm", "ollama", "lmstudio"] as const
 
 export type RouterName = (typeof routerNames)[number]
 
@@ -71,7 +71,9 @@ export const getModelMaxOutputTokens = ({
 		return ANTHROPIC_DEFAULT_MAX_TOKENS
 	}
 
-	return model.maxTokens ?? undefined
+	// If maxTokens is 0 or undefined, fall back to 20% of context window
+	// This matches the sliding window logic
+	return model.maxTokens || Math.ceil(model.contextWindow * 0.2)
 }
 
 // GetModelsOptions
@@ -82,3 +84,5 @@ export type GetModelsOptions =
 	| { provider: "requesty"; apiKey?: string }
 	| { provider: "unbound"; apiKey?: string }
 	| { provider: "litellm"; apiKey: string; baseUrl: string }
+	| { provider: "ollama"; baseUrl?: string }
+	| { provider: "lmstudio"; baseUrl?: string }

@@ -1,12 +1,22 @@
 import * as vscode from "vscode"
 
-import type { CloudUserInfo, TelemetryEvent, OrganizationAllowList } from "@roo-code/types"
+import type {
+	CloudUserInfo,
+	TelemetryEvent,
+	OrganizationAllowList,
+	ClineMessage,
+	ShareVisibility,
+} from "@roo-code/types"
 import { TelemetryService } from "@roo-code/telemetry"
 
 import { CloudServiceCallbacks } from "./types"
-import { AuthService } from "./AuthService"
-import { SettingsService } from "./SettingsService"
+import type { AuthService } from "./auth"
+import { WebAuthService, StaticTokenAuthService } from "./auth"
+import type { SettingsService } from "./SettingsService"
+import { CloudSettingsService } from "./CloudSettingsService"
+import { StaticSettingsService } from "./StaticSettingsService"
 import { TelemetryClient } from "./TelemetryClient"
+import { ShareService, TaskNotFoundError } from "./ShareService"
 
 export class CloudService {
 	private static _instance: CloudService | null = null
@@ -17,6 +27,7 @@ export class CloudService {
 	private authService: AuthService | null = null
 	private settingsService: SettingsService | null = null
 	private telemetryClient: TelemetryClient | null = null
+	private shareService: ShareService | null = null
 	private isInitialized = false
 	private log: (...args: unknown[]) => void
 
@@ -35,18 +46,39 @@ export class CloudService {
 		}
 
 		try {
-			this.authService = await AuthService.createInstance(this.context, this.log)
+			const cloudToken = process.env.ROO_CODE_CLOUD_TOKEN
+			if (cloudToken && cloudToken.length > 0) {
+				this.authService = new StaticTokenAuthService(this.context, cloudToken, this.log)
+			} else {
+				this.authService = new WebAuthService(this.context, this.log)
+			}
 
+			await this.authService.initialize()
+
+			this.authService.on("attempting-session", this.authListener)
 			this.authService.on("inactive-session", this.authListener)
 			this.authService.on("active-session", this.authListener)
 			this.authService.on("logged-out", this.authListener)
 			this.authService.on("user-info", this.authListener)
 
-			this.settingsService = await SettingsService.createInstance(this.context, () =>
-				this.callbacks.stateChanged?.(),
-			)
+			// Check for static settings environment variable
+			const staticOrgSettings = process.env.ROO_CODE_CLOUD_ORG_SETTINGS
+			if (staticOrgSettings && staticOrgSettings.length > 0) {
+				this.settingsService = new StaticSettingsService(staticOrgSettings, this.log)
+			} else {
+				const cloudSettingsService = new CloudSettingsService(
+					this.context,
+					this.authService,
+					() => this.callbacks.stateChanged?.(),
+					this.log,
+				)
+				cloudSettingsService.initialize()
+				this.settingsService = cloudSettingsService
+			}
 
 			this.telemetryClient = new TelemetryClient(this.authService, this.settingsService)
+
+			this.shareService = new ShareService(this.authService, this.settingsService, this.log)
 
 			try {
 				TelemetryService.instance.register(this.telemetryClient)
@@ -83,9 +115,42 @@ export class CloudService {
 		return this.authService!.hasActiveSession()
 	}
 
+	public hasOrIsAcquiringActiveSession(): boolean {
+		this.ensureInitialized()
+		return this.authService!.hasOrIsAcquiringActiveSession()
+	}
+
 	public getUserInfo(): CloudUserInfo | null {
 		this.ensureInitialized()
 		return this.authService!.getUserInfo()
+	}
+
+	public getOrganizationId(): string | null {
+		this.ensureInitialized()
+		const userInfo = this.authService!.getUserInfo()
+		return userInfo?.organizationId || null
+	}
+
+	public getOrganizationName(): string | null {
+		this.ensureInitialized()
+		const userInfo = this.authService!.getUserInfo()
+		return userInfo?.organizationName || null
+	}
+
+	public getOrganizationRole(): string | null {
+		this.ensureInitialized()
+		const userInfo = this.authService!.getUserInfo()
+		return userInfo?.organizationRole || null
+	}
+
+	public hasStoredOrganizationId(): boolean {
+		this.ensureInitialized()
+		return this.authService!.getStoredOrganizationId() !== null
+	}
+
+	public getStoredOrganizationId(): string | null {
+		this.ensureInitialized()
+		return this.authService!.getStoredOrganizationId()
 	}
 
 	public getAuthState(): string {
@@ -93,9 +158,13 @@ export class CloudService {
 		return this.authService!.getState()
 	}
 
-	public async handleAuthCallback(code: string | null, state: string | null): Promise<void> {
+	public async handleAuthCallback(
+		code: string | null,
+		state: string | null,
+		organizationId?: string | null,
+	): Promise<void> {
 		this.ensureInitialized()
-		return this.authService!.handleCallback(code, state)
+		return this.authService!.handleCallback(code, state, organizationId)
 	}
 
 	// SettingsService
@@ -112,10 +181,38 @@ export class CloudService {
 		this.telemetryClient!.capture(event)
 	}
 
+	// ShareService
+
+	public async shareTask(
+		taskId: string,
+		visibility: ShareVisibility = "organization",
+		clineMessages?: ClineMessage[],
+	) {
+		this.ensureInitialized()
+
+		try {
+			return await this.shareService!.shareTask(taskId, visibility)
+		} catch (error) {
+			if (error instanceof TaskNotFoundError && clineMessages) {
+				// Backfill messages and retry
+				await this.telemetryClient!.backfillMessages(clineMessages, taskId)
+				return await this.shareService!.shareTask(taskId, visibility)
+			}
+			throw error
+		}
+	}
+
+	public async canShareTask(): Promise<boolean> {
+		this.ensureInitialized()
+		return this.shareService!.canShareTask()
+	}
+
 	// Lifecycle
 
 	public dispose(): void {
 		if (this.authService) {
+			this.authService.off("attempting-session", this.authListener)
+			this.authService.off("inactive-session", this.authListener)
 			this.authService.off("active-session", this.authListener)
 			this.authService.off("logged-out", this.authListener)
 			this.authService.off("user-info", this.authListener)
@@ -128,7 +225,7 @@ export class CloudService {
 	}
 
 	private ensureInitialized(): void {
-		if (!this.isInitialized || !this.authService || !this.settingsService || !this.telemetryClient) {
+		if (!this.isInitialized) {
 			throw new Error("CloudService not initialized.")
 		}
 	}

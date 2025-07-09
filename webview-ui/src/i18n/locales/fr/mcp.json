@@ -18,7 +18,8 @@
 	"tool": {
 		"alwaysAllow": "Toujours autoriser",
 		"parameters": "Paramètres",
-		"noDescription": "Aucune description"
+		"noDescription": "Aucune description",
+		"togglePromptInclusion": "Basculer l'inclusion dans le prompt"
 	},
 	"tabs": {
 		"tools": "Outils",
@@ -28,7 +29,6 @@
 	"emptyState": {
 		"noTools": "Aucun outil trouvé",
 		"noResources": "Aucune ressource trouvée",
-		"noLogs": "Aucun journal trouvé",
 		"noErrors": "Aucune erreur trouvée"
 	},
 	"networkTimeout": {
@@ -54,5 +54,11 @@
 	"serverStatus": {
 		"retrying": "Nouvelle tentative...",
 		"retryConnection": "Réessayer la connexion"
+	},
+	"refreshMCP": "Rafraîchir les serveurs MCP",
+	"execution": {
+		"running": "En cours",
+		"completed": "Terminé",
+		"error": "Erreur"
 	}
 }

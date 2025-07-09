@@ -18,7 +18,8 @@
 	"tool": {
 		"alwaysAllow": "Immer erlauben",
 		"parameters": "Parameter",
-		"noDescription": "Keine Beschreibung"
+		"noDescription": "Keine Beschreibung",
+		"togglePromptInclusion": "Einbeziehung in Prompt umschalten"
 	},
 	"tabs": {
 		"tools": "Tools",
@@ -28,7 +29,6 @@
 	"emptyState": {
 		"noTools": "Keine Tools gefunden",
 		"noResources": "Keine Ressourcen gefunden",
-		"noLogs": "Keine Protokolle gefunden",
 		"noErrors": "Keine Fehler gefunden"
 	},
 	"networkTimeout": {
@@ -54,5 +54,11 @@
 	"serverStatus": {
 		"retrying": "Wiederhole...",
 		"retryConnection": "Verbindung wiederholen"
+	},
+	"refreshMCP": "MCP-Server aktualisieren",
+	"execution": {
+		"running": "Wird ausgeführt",
+		"completed": "Abgeschlossen",
+		"error": "Fehler"
 	}
 }

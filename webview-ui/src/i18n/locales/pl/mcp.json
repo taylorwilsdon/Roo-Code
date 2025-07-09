@@ -18,7 +18,8 @@
 	"tool": {
 		"alwaysAllow": "Zawsze pozwalaj",
 		"parameters": "Parametry",
-		"noDescription": "Brak opisu"
+		"noDescription": "Brak opisu",
+		"togglePromptInclusion": "Przełącz uwzględnianie w podpowiedzi"
 	},
 	"tabs": {
 		"tools": "Narzędzia",
@@ -28,7 +29,6 @@
 	"emptyState": {
 		"noTools": "Nie znaleziono narzędzi",
 		"noResources": "Nie znaleziono zasobów",
-		"noLogs": "Nie znaleziono logów",
 		"noErrors": "Nie znaleziono błędów"
 	},
 	"networkTimeout": {
@@ -54,5 +54,11 @@
 	"serverStatus": {
 		"retrying": "Ponawianie...",
 		"retryConnection": "Ponów połączenie"
+	},
+	"refreshMCP": "Odśwież serwery MCP",
+	"execution": {
+		"running": "Uruchomione",
+		"completed": "Zakończone",
+		"error": "Błąd"
 	}
 }

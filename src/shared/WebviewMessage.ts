@@ -1,6 +1,14 @@
 import { z } from "zod"
 
-import type { ProviderSettings, PromptComponent, ModeConfig } from "@roo-code/types"
+import type {
+	ProviderSettings,
+	PromptComponent,
+	ModeConfig,
+	InstallMarketplaceItemOptions,
+	MarketplaceItem,
+	ShareVisibility,
+} from "@roo-code/types"
+import { marketplaceItemSchema } from "@roo-code/types"
 
 import { Mode } from "./modes"
 
@@ -10,8 +18,13 @@ export type PromptMode = Mode | "enhance"
 
 export type AudioType = "notification" | "celebration" | "progress_loop"
 
+export interface UpdateTodoListPayload {
+	todos: any[]
+}
+
 export interface WebviewMessage {
 	type:
+		| "updateTodoList"
 		| "deleteMultipleTasksWithIds"
 		| "currentApiConfigName"
 		| "saveApiConfiguration"
@@ -27,7 +40,11 @@ export interface WebviewMessage {
 		| "alwaysAllowReadOnlyOutsideWorkspace"
 		| "alwaysAllowWrite"
 		| "alwaysAllowWriteOutsideWorkspace"
+		| "alwaysAllowWriteProtected"
 		| "alwaysAllowExecute"
+		| "alwaysAllowFollowupQuestions"
+		| "alwaysAllowUpdateTodoList"
+		| "followupAutoApproveTimeoutMs"
 		| "webviewDidLaunch"
 		| "newTask"
 		| "askResponse"
@@ -36,6 +53,7 @@ export interface WebviewMessage {
 		| "didShowAnnouncement"
 		| "selectImages"
 		| "exportCurrentTask"
+		| "shareCurrentTask"
 		| "showTaskWithId"
 		| "deleteTaskWithId"
 		| "exportTaskWithId"
@@ -49,6 +67,7 @@ export interface WebviewMessage {
 		| "requestLmStudioModels"
 		| "requestVsCodeLmModels"
 		| "openImage"
+		| "saveImage"
 		| "openFile"
 		| "openMention"
 		| "cancelTask"
@@ -60,6 +79,7 @@ export interface WebviewMessage {
 		| "alwaysAllowModeSwitch"
 		| "allowedMaxRequests"
 		| "alwaysAllowSubtasks"
+		| "alwaysAllowUpdateTodoList"
 		| "autoCondenseContext"
 		| "autoCondenseContextPercent"
 		| "condensingApiConfigId"
@@ -79,7 +99,9 @@ export interface WebviewMessage {
 		| "openMcpSettings"
 		| "openProjectMcpSettings"
 		| "restartMcpServer"
+		| "refreshAllMcpServers"
 		| "toggleToolAlwaysAllow"
+		| "toggleToolEnabledForPrompt"
 		| "toggleMcpServer"
 		| "updateMcpTimeout"
 		| "fuzzyMatchThreshold"
@@ -88,6 +110,7 @@ export interface WebviewMessage {
 		| "enhancedPrompt"
 		| "draggedImages"
 		| "deleteMessage"
+		| "submitEditedMessage"
 		| "terminalOutputLineLimit"
 		| "terminalShellIntegrationTimeout"
 		| "terminalShellIntegrationDisabled"
@@ -107,7 +130,6 @@ export interface WebviewMessage {
 		| "mode"
 		| "updatePrompt"
 		| "updateSupportPrompt"
-		| "resetSupportPrompt"
 		| "getSystemPrompt"
 		| "copySystemPrompt"
 		| "systemPrompt"
@@ -126,6 +148,7 @@ export interface WebviewMessage {
 		| "humanRelayResponse"
 		| "humanRelayCancel"
 		| "browserToolEnabled"
+		| "codebaseIndexEnabled"
 		| "telemetrySetting"
 		| "showRooIgnoredFiles"
 		| "testBrowserConnection"
@@ -137,6 +160,7 @@ export interface WebviewMessage {
 		| "searchFiles"
 		| "toggleApiConfigPin"
 		| "setHistoryPreviewCollapsed"
+		| "hasOpenedModeSelector"
 		| "accountButtonClicked"
 		| "rooCloudSignIn"
 		| "rooCloudSignOut"
@@ -146,9 +170,34 @@ export interface WebviewMessage {
 		| "clearIndexData"
 		| "indexingStatusUpdate"
 		| "indexCleared"
-		| "codebaseIndexConfig"
+		| "focusPanelRequest"
+		| "profileThresholds"
+		| "setHistoryPreviewCollapsed"
+		| "openExternal"
+		| "filterMarketplaceItems"
+		| "marketplaceButtonClicked"
+		| "installMarketplaceItem"
+		| "installMarketplaceItemWithParameters"
+		| "cancelMarketplaceInstall"
+		| "removeInstalledMarketplaceItem"
+		| "marketplaceInstallResult"
+		| "fetchMarketplaceData"
+		| "switchTab"
+		| "profileThresholds"
+		| "shareTaskSuccess"
+		| "exportMode"
+		| "exportModeResult"
+		| "importMode"
+		| "importModeResult"
+		| "checkRulesDirectory"
+		| "checkRulesDirectoryResult"
+		| "saveCodeIndexSettingsAtomic"
+		| "requestCodeIndexSecretStatus"
 	text?: string
+	editedMessageContent?: string
+	tab?: "settings" | "history" | "mcp" | "modes" | "chat" | "marketplace" | "account"
 	disabled?: boolean
+	dataUri?: string
 	askResponse?: ClineAskResponse
 	apiConfiguration?: ProviderSettings
 	images?: string[]
@@ -159,6 +208,7 @@ export interface WebviewMessage {
 	serverName?: string
 	toolName?: string
 	alwaysAllow?: boolean
+	isEnabled?: boolean
 	mode?: Mode
 	promptMode?: PromptMode
 	customPrompt?: PromptComponent
@@ -176,6 +226,32 @@ export interface WebviewMessage {
 	hasSystemPromptOverride?: boolean
 	terminalOperation?: "continue" | "abort"
 	historyPreviewCollapsed?: boolean
+	filters?: { type?: string; search?: string; tags?: string[] }
+	url?: string // For openExternal
+	mpItem?: MarketplaceItem
+	mpInstallOptions?: InstallMarketplaceItemOptions
+	config?: Record<string, any> // Add config to the payload
+	visibility?: ShareVisibility // For share visibility
+	hasContent?: boolean // For checkRulesDirectoryResult
+	checkOnly?: boolean // For deleteCustomMode check
+	codeIndexSettings?: {
+		// Global state settings
+		codebaseIndexEnabled: boolean
+		codebaseIndexQdrantUrl: string
+		codebaseIndexEmbedderProvider: "openai" | "ollama" | "openai-compatible" | "gemini"
+		codebaseIndexEmbedderBaseUrl?: string
+		codebaseIndexEmbedderModelId: string
+		codebaseIndexEmbedderModelDimension?: number // Generic dimension for all providers
+		codebaseIndexOpenAiCompatibleBaseUrl?: string
+		codebaseIndexSearchMaxResults?: number
+		codebaseIndexSearchMinScore?: number
+
+		// Secret settings
+		codeIndexOpenAiKey?: string
+		codeIndexQdrantApiKey?: string
+		codebaseIndexOpenAiCompatibleApiKey?: string
+		codebaseIndexGeminiApiKey?: string
+	}
 }
 
 export const checkoutDiffPayloadSchema = z.object({
@@ -205,8 +281,19 @@ export interface IndexClearedPayload {
 	error?: string
 }
 
+export const installMarketplaceItemWithParametersPayloadSchema = z.object({
+	item: marketplaceItemSchema,
+	parameters: z.record(z.string(), z.any()),
+})
+
+export type InstallMarketplaceItemWithParametersPayload = z.infer<
+	typeof installMarketplaceItemWithParametersPayloadSchema
+>
+
 export type WebViewMessagePayload =
 	| CheckpointDiffPayload
 	| CheckpointRestorePayload
 	| IndexingStatusPayload
 	| IndexClearedPayload
+	| InstallMarketplaceItemWithParametersPayload
+	| UpdateTodoListPayload

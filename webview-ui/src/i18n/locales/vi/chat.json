@@ -11,7 +11,17 @@
 		"closeAndStart": "Đóng nhiệm vụ và bắt đầu nhiệm vụ mới",
 		"export": "Xuất lịch sử nhiệm vụ",
 		"delete": "Xóa nhiệm vụ (Shift + Click để bỏ qua xác nhận)",
-		"condenseContext": "Cô đọng ngữ cảnh thông minh"
+		"condenseContext": "Cô đọng ngữ cảnh thông minh",
+		"share": "Chia sẻ nhiệm vụ",
+		"shareWithOrganization": "Chia sẻ với tổ chức",
+		"shareWithOrganizationDescription": "Chỉ thành viên tổ chức của bạn mới có thể truy cập",
+		"sharePublicly": "Chia sẻ công khai",
+		"sharePubliclyDescription": "Bất kỳ ai có liên kết đều có thể truy cập",
+		"connectToCloud": "Kết nối với Cloud",
+		"connectToCloudDescription": "Đăng nhập vào Roo Code Cloud để chia sẻ tác vụ",
+		"sharingDisabledByOrganization": "Chia sẻ bị tổ chức vô hiệu hóa",
+		"shareSuccessOrganization": "Liên kết tổ chức đã được sao chép vào clipboard",
+		"shareSuccessPublic": "Liên kết công khai đã được sao chép vào clipboard"
 	},
 	"unpin": "Bỏ ghim khỏi đầu",
 	"pin": "Ghim lên đầu",
@@ -74,7 +84,7 @@
 	"onboarding": "<strong>Danh sách nhiệm vụ của bạn trong không gian làm việc này trống.</strong> Bắt đầu bằng cách nhập nhiệm vụ bên dưới. Bạn không chắc chắn nên bắt đầu như thế nào? Đọc thêm về những gì Roo có thể làm cho bạn trong <DocsLink>tài liệu</DocsLink>.",
 	"rooTips": {
 		"boomerangTasks": {
-			"title": "Nhiệm vụ Boomerang",
+			"title": "Điều phối Nhiệm vụ",
 			"description": "Chia nhỏ các nhiệm vụ thành các phần nhỏ hơn, dễ quản lý hơn."
 		},
 		"stickyModels": {
@@ -101,6 +111,12 @@
 	"dragFiles": "giữ shift để kéo tệp",
 	"dragFilesImages": "giữ shift để kéo tệp/hình ảnh",
 	"enhancePromptDescription": "Nút 'Nâng cao yêu cầu' giúp cải thiện yêu cầu của bạn bằng cách cung cấp ngữ cảnh bổ sung, làm rõ hoặc diễn đạt lại. Hãy thử nhập yêu cầu tại đây và nhấp vào nút một lần nữa để xem cách thức hoạt động.",
+	"modeSelector": {
+		"title": "Chế độ",
+		"marketplace": "Chợ Chế độ",
+		"settings": "Cài đặt Chế độ",
+		"description": "Các nhân cách chuyên biệt điều chỉnh hành vi của Roo."
+	},
 	"errorReadingFile": "Lỗi khi đọc tệp:",
 	"noValidImages": "Không có hình ảnh hợp lệ nào được xử lý",
 	"separator": "Dấu phân cách",
@@ -144,6 +160,7 @@
 		"didRead": "Roo đã đọc tệp này:",
 		"wantsToEdit": "Roo muốn chỉnh sửa tệp này:",
 		"wantsToEditOutsideWorkspace": "Roo muốn chỉnh sửa tệp này bên ngoài không gian làm việc:",
+		"wantsToEditProtected": "Roo muốn chỉnh sửa tệp cấu hình được bảo vệ:",
 		"wantsToCreate": "Roo muốn tạo một tệp mới:",
 		"wantsToSearchReplace": "Roo muốn thực hiện tìm kiếm và thay thế trong tệp này:",
 		"didSearchReplace": "Roo đã thực hiện tìm kiếm và thay thế trong tệp này:",
@@ -151,7 +168,8 @@
 		"wantsToInsertWithLineNumber": "Roo muốn chèn nội dung vào dòng {{lineNumber}} của tệp này:",
 		"wantsToInsertAtEnd": "Roo muốn thêm nội dung vào cuối tệp này:",
 		"wantsToReadAndXMore": "Roo muốn đọc tệp này và {{count}} tệp khác:",
-		"wantsToReadMultiple": "Roo muốn đọc nhiều tệp:"
+		"wantsToReadMultiple": "Roo muốn đọc nhiều tệp:",
+		"wantsToApplyBatchChanges": "Roo muốn áp dụng thay đổi cho nhiều tệp:"
 	},
 	"directoryOperations": {
 		"wantsToViewTopLevel": "Roo muốn xem các tệp cấp cao nhất trong thư mục này:",
@@ -161,7 +179,15 @@
 		"wantsToViewDefinitions": "Roo muốn xem tên định nghĩa mã nguồn được sử dụng trong thư mục này:",
 		"didViewDefinitions": "Roo đã xem tên định nghĩa mã nguồn được sử dụng trong thư mục này:",
 		"wantsToSearch": "Roo muốn tìm kiếm trong thư mục này cho <code>{{regex}}</code>:",
-		"didSearch": "Roo đã tìm kiếm trong thư mục này cho <code>{{regex}}</code>:"
+		"didSearch": "Roo đã tìm kiếm trong thư mục này cho <code>{{regex}}</code>:",
+		"wantsToSearchOutsideWorkspace": "Roo muốn tìm kiếm trong thư mục này (ngoài không gian làm việc) cho <code>{{regex}}</code>:",
+		"didSearchOutsideWorkspace": "Roo đã tìm kiếm trong thư mục này (ngoài không gian làm việc) cho <code>{{regex}}</code>:",
+		"wantsToViewTopLevelOutsideWorkspace": "Roo muốn xem các tệp cấp cao nhất trong thư mục này (ngoài không gian làm việc):",
+		"didViewTopLevelOutsideWorkspace": "Roo đã xem các tệp cấp cao nhất trong thư mục này (ngoài không gian làm việc):",
+		"wantsToViewRecursiveOutsideWorkspace": "Roo muốn xem đệ quy tất cả các tệp trong thư mục này (ngoài không gian làm việc):",
+		"didViewRecursiveOutsideWorkspace": "Roo đã xem đệ quy tất cả các tệp trong thư mục này (ngoài không gian làm việc):",
+		"wantsToViewDefinitionsOutsideWorkspace": "Roo muốn xem tên định nghĩa mã nguồn được sử dụng trong thư mục này (ngoài không gian làm việc):",
+		"didViewDefinitionsOutsideWorkspace": "Roo đã xem tên định nghĩa mã nguồn được sử dụng trong thư mục này (ngoài không gian làm việc):"
 	},
 	"commandOutput": "Kết quả lệnh",
 	"response": "Phản hồi",
@@ -208,15 +234,17 @@
 		"tokens": "token"
 	},
 	"followUpSuggest": {
-		"copyToInput": "Sao chép vào ô nhập liệu (hoặc Shift + nhấp chuột)"
+		"copyToInput": "Sao chép vào ô nhập liệu (hoặc Shift + nhấp chuột)",
+		"autoSelectCountdown": "Tự động chọn sau {{count}}s",
+		"countdownDisplay": "{{count}}s"
 	},
 	"announcement": {
 		"title": "🎉 Roo Code {{version}} Đã phát hành",
-		"description": "Roo Code {{version}} mang đến các tính năng mạnh mẽ và cải tiến mới dựa trên phản hồi của bạn.",
+		"description": "Roo Code {{version}} mang đến các tính năng mạnh mẽ mới và cải tiến đáng kể để nâng cao quy trình phát triển của bạn.",
 		"whatsNew": "Có gì mới",
-		"feature1": "<bold>Cô đọng ngữ cảnh thông minh được bật mặc định</bold>: Cô đọng ngữ cảnh hiện được bật mặc định với các cài đặt có thể cấu hình cho khi nào tự động cô đọng",
-		"feature2": "<bold>Nút cô đọng thủ công</bold>: Nút mới trong tiêu đề nhiệm vụ cho phép bạn kích hoạt cô đọng ngữ cảnh thủ công bất cứ lúc nào",
-		"feature3": "<bold>Cài đặt cô đọng nâng cao</bold>: Tinh chỉnh khi nào và cách thức tự động cô đọng thông qua <contextSettingsLink>Cài đặt ngữ cảnh</contextSettingsLink>",
+		"feature1": "<bold>Lập chỉ mục Codebase Tốt nghiệp từ Thử nghiệm</bold>: Lập chỉ mục codebase đầy đủ hiện đã ổn định và sẵn sàng cho sử dụng sản xuất với tìm kiếm cải tiến và hiểu biết ngữ cảnh.",
+		"feature2": "<bold>Tính năng Danh sách Todo Mới</bold>: Giữ nhiệm vụ của bạn đúng hướng với quản lý todo tích hợp giúp bạn duy trì tổ chức và tập trung vào mục tiêu phát triển.",
+		"feature3": "<bold>Cải thiện Chuyển đổi từ Architect sang Code</bold>: Chuyển đổi mượt mà từ lập kế hoạch trong chế độ Architect sang triển khai trong chế độ Code.",
 		"hideButton": "Ẩn thông báo",
 		"detailsDiscussLinks": "Nhận thêm chi tiết và thảo luận tại <discordLink>Discord</discordLink> và <redditLink>Reddit</redditLink> 🚀"
 	},
@@ -268,7 +296,8 @@
 	"codebaseSearch": {
 		"wantsToSearch": "Roo muốn tìm kiếm trong cơ sở mã cho <code>{{query}}</code>:",
 		"wantsToSearchWithPath": "Roo muốn tìm kiếm trong cơ sở mã cho <code>{{query}}</code> trong <code>{{path}}</code>:",
-		"didSearch": "Đã tìm thấy {{count}} kết quả cho <code>{{query}}</code>:"
+		"didSearch": "Đã tìm thấy {{count}} kết quả cho <code>{{query}}</code>:",
+		"resultTooltip": "Điểm tương tự: {{score}} (nhấp để mở tệp)"
 	},
 	"read-batch": {
 		"approve": {
@@ -277,5 +306,15 @@
 		"deny": {
 			"title": "Từ chối tất cả"
 		}
+	},
+	"indexingStatus": {
+		"ready": "Chỉ mục sẵn sàng",
+		"indexing": "Đang lập chỉ mục {{percentage}}%",
+		"indexed": "Đã lập chỉ mục",
+		"error": "Lỗi chỉ mục",
+		"status": "Trạng thái chỉ mục"
+	},
+	"versionIndicator": {
+		"ariaLabel": "Phiên bản {{version}} - Nhấp để xem ghi chú phát hành"
 	}
 }

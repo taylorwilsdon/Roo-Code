@@ -1,44 +1,26 @@
 import { HTMLAttributes } from "react"
 import { FlaskConical } from "lucide-react"
 
-import type { ExperimentId, CodebaseIndexConfig, CodebaseIndexModels, ProviderSettings } from "@roo-code/types"
+import type { Experiments } from "@roo-code/types"
 
 import { EXPERIMENT_IDS, experimentConfigsMap } from "@roo/experiments"
 
-import { ExtensionStateContextType } from "@src/context/ExtensionStateContext"
 import { useAppTranslation } from "@src/i18n/TranslationContext"
 import { cn } from "@src/lib/utils"
 
-import { SetCachedStateField, SetExperimentEnabled } from "./types"
+import { SetExperimentEnabled } from "./types"
 import { SectionHeader } from "./SectionHeader"
 import { Section } from "./Section"
 import { ExperimentalFeature } from "./ExperimentalFeature"
-import { CodeIndexSettings } from "./CodeIndexSettings"
-import { ConcurrentFileReadsExperiment } from "./ConcurrentFileReadsExperiment"
 
 type ExperimentalSettingsProps = HTMLAttributes<HTMLDivElement> & {
-	experiments: Record<ExperimentId, boolean>
+	experiments: Experiments
 	setExperimentEnabled: SetExperimentEnabled
-	maxConcurrentFileReads?: number
-	setCachedStateField: SetCachedStateField<"codebaseIndexConfig" | "maxConcurrentFileReads">
-	// CodeIndexSettings props
-	codebaseIndexModels: CodebaseIndexModels | undefined
-	codebaseIndexConfig: CodebaseIndexConfig | undefined
-	apiConfiguration: ProviderSettings
-	setApiConfigurationField: <K extends keyof ProviderSettings>(field: K, value: ProviderSettings[K]) => void
-	areSettingsCommitted: boolean
 }
 
 export const ExperimentalSettings = ({
 	experiments,
 	setExperimentEnabled,
-	maxConcurrentFileReads,
-	setCachedStateField,
-	codebaseIndexModels,
-	codebaseIndexConfig,
-	apiConfiguration,
-	setApiConfigurationField,
-	areSettingsCommitted,
 	className,
 	...props
 }: ExperimentalSettingsProps) => {
@@ -55,19 +37,16 @@ export const ExperimentalSettings = ({
 
 			<Section>
 				{Object.entries(experimentConfigsMap)
-					.filter((config) => config[0] !== "DIFF_STRATEGY" && config[0] !== "MULTI_SEARCH_AND_REPLACE")
+					.filter(([key]) => key in EXPERIMENT_IDS)
 					.map((config) => {
-						if (config[0] === "CONCURRENT_FILE_READS") {
+						if (config[0] === "MULTI_FILE_APPLY_DIFF") {
 							return (
-								<ConcurrentFileReadsExperiment
+								<ExperimentalFeature
 									key={config[0]}
-									enabled={experiments[EXPERIMENT_IDS.CONCURRENT_FILE_READS] ?? false}
-									onEnabledChange={(enabled) =>
-										setExperimentEnabled(EXPERIMENT_IDS.CONCURRENT_FILE_READS, enabled)
-									}
-									maxConcurrentFileReads={maxConcurrentFileReads ?? 15}
-									onMaxConcurrentFileReadsChange={(value) =>
-										setCachedStateField("maxConcurrentFileReads", value)
+									experimentKey={config[0]}
+									enabled={experiments[EXPERIMENT_IDS.MULTI_FILE_APPLY_DIFF] ?? false}
+									onChange={(enabled) =>
+										setExperimentEnabled(EXPERIMENT_IDS.MULTI_FILE_APPLY_DIFF, enabled)
 									}
 								/>
 							)
@@ -78,20 +57,14 @@ export const ExperimentalSettings = ({
 								experimentKey={config[0]}
 								enabled={experiments[EXPERIMENT_IDS[config[0] as keyof typeof EXPERIMENT_IDS]] ?? false}
 								onChange={(enabled) =>
-									setExperimentEnabled(EXPERIMENT_IDS[config[0] as keyof typeof EXPERIMENT_IDS], enabled)
+									setExperimentEnabled(
+										EXPERIMENT_IDS[config[0] as keyof typeof EXPERIMENT_IDS],
+										enabled,
+									)
 								}
 							/>
 						)
 					})}
-
-				<CodeIndexSettings
-					codebaseIndexModels={codebaseIndexModels}
-					codebaseIndexConfig={codebaseIndexConfig}
-					apiConfiguration={apiConfiguration}
-					setCachedStateField={setCachedStateField as SetCachedStateField<keyof ExtensionStateContextType>}
-					setApiConfigurationField={setApiConfigurationField}
-					areSettingsCommitted={areSettingsCommitted}
-				/>
 			</Section>
 		</div>
 	)

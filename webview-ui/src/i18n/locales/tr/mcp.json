@@ -18,7 +18,8 @@
 	"tool": {
 		"alwaysAllow": "Her zaman izin ver",
 		"parameters": "Parametreler",
-		"noDescription": "Açıklama yok"
+		"noDescription": "Açıklama yok",
+		"togglePromptInclusion": "Komut isteminde dahil etmeyi aç/kapat"
 	},
 	"tabs": {
 		"tools": "Araçlar",
@@ -28,7 +29,6 @@
 	"emptyState": {
 		"noTools": "Araç bulunamadı",
 		"noResources": "Kaynak bulunamadı",
-		"noLogs": "Kayıt bulunamadı",
 		"noErrors": "Hata bulunamadı"
 	},
 	"networkTimeout": {
@@ -54,5 +54,11 @@
 	"serverStatus": {
 		"retrying": "Tekrar deneniyor...",
 		"retryConnection": "Bağlantıyı tekrar dene"
+	},
+	"refreshMCP": "MCP Sunucularını Yenile",
+	"execution": {
+		"running": "Çalışıyor",
+		"completed": "Tamamlandı",
+		"error": "Hata"
 	}
 }

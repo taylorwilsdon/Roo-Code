@@ -15,7 +15,7 @@ function getEditingInstructions(diffStrategy?: DiffStrategy): string {
 		availableTools.push("write_to_file (for creating new files or complete file rewrites)")
 	}
 
-	availableTools.push("insert_content (for adding lines to existing files)")
+	availableTools.push("insert_content (for adding lines to files)")
 	availableTools.push("search_and_replace (for finding and replacing individual pieces of text)")
 
 	// Base editing instruction mentioning all available tools
@@ -45,14 +45,20 @@ function getEditingInstructions(diffStrategy?: DiffStrategy): string {
 	return instructions.join("\n")
 }
 
-export function getRulesSection(cwd: string, supportsComputerUse: boolean, diffStrategy?: DiffStrategy, codeIndexManager?: CodeIndexManager): string {
-	const isCodebaseSearchAvailable = codeIndexManager &&
+export function getRulesSection(
+	cwd: string,
+	supportsComputerUse: boolean,
+	diffStrategy?: DiffStrategy,
+	codeIndexManager?: CodeIndexManager,
+): string {
+	const isCodebaseSearchAvailable =
+		codeIndexManager &&
 		codeIndexManager.isFeatureEnabled &&
 		codeIndexManager.isFeatureConfigured &&
 		codeIndexManager.isInitialized
 
 	const codebaseSearchRule = isCodebaseSearchAvailable
-		? "- **CRITICAL: When you need to understand existing code or functionality, ALWAYS use the `codebase_search` tool FIRST before using search_files or other file exploration tools.** The codebase_search tool uses semantic search to find relevant code based on meaning, not just keywords, making it much more effective for understanding how features are implemented.\n"
+		? "- **CRITICAL: For ANY exploration of code you haven't examined yet in this conversation, you MUST use the `codebase_search` tool FIRST before using search_files or other file exploration tools.** This requirement applies throughout the entire conversation, not just when starting a task. The codebase_search tool uses semantic search to find relevant code based on meaning, not just keywords, making it much more effective for understanding how features are implemented. Even if you've already explored some parts of the codebase, any new area or functionality you need to understand requires using codebase_search first.\n"
 		: ""
 
 	return `====
