@@ -38,8 +38,8 @@ vi.mock("@src/context/ExtensionStateContext")
 const getEnhancePromptButton = () => {
 	return screen.getByRole("button", {
 		name: (_, element) => {
-			// Find the button with the sparkle icon
-			return element.querySelector(".codicon-sparkle") !== null
+			// Find the button with the wand sparkles icon (Lucide React)
+			return element.querySelector(".lucide-wand-sparkles") !== null
 		},
 	})
 }
@@ -154,8 +154,9 @@ describe("ChatTextArea", () => {
 			const enhanceButton = getEnhancePromptButton()
 			fireEvent.click(enhanceButton)
 
-			const loadingSpinner = screen.getByText("", { selector: ".codicon-loading" })
-			expect(loadingSpinner).toBeInTheDocument()
+			// Check if the WandSparkles icon has the animate-spin class
+			const animatingIcon = enhanceButton.querySelector(".animate-spin")
+			expect(animatingIcon).toBeInTheDocument()
 		})
 	})
 
@@ -183,10 +184,27 @@ describe("ChatTextArea", () => {
 	})
 
 	describe("enhanced prompt response", () => {
-		it("should update input value when receiving enhanced prompt", () => {
+		it("should update input value using native browser methods when receiving enhanced prompt", () => {
 			const setInputValue = vi.fn()
 
-			render(<ChatTextArea {...defaultProps} setInputValue={setInputValue} />)
+			// Mock document.execCommand
+			const mockExecCommand = vi.fn().mockReturnValue(true)
+			Object.defineProperty(document, "execCommand", {
+				value: mockExecCommand,
+				writable: true,
+			})
+
+			const { container } = render(
+				<ChatTextArea {...defaultProps} setInputValue={setInputValue} inputValue="Original prompt" />,
+			)
+
+			const textarea = container.querySelector("textarea")!
+
+			// Mock textarea methods
+			const mockSelect = vi.fn()
+			const mockFocus = vi.fn()
+			textarea.select = mockSelect
+			textarea.focus = mockFocus
 
 			// Simulate receiving enhanced prompt message
 			window.dispatchEvent(
@@ -198,7 +216,53 @@ describe("ChatTextArea", () => {
 				}),
 			)
 
+			// Verify native browser methods were used
+			expect(mockFocus).toHaveBeenCalled()
+			expect(mockSelect).toHaveBeenCalled()
+			expect(mockExecCommand).toHaveBeenCalledWith("insertText", false, "Enhanced test prompt")
+		})
+
+		it("should fallback to setInputValue when execCommand is not available", () => {
+			const setInputValue = vi.fn()
+
+			// Mock document.execCommand to be undefined (not available)
+			Object.defineProperty(document, "execCommand", {
+				value: undefined,
+				writable: true,
+			})
+
+			render(<ChatTextArea {...defaultProps} setInputValue={setInputValue} inputValue="Original prompt" />)
+
+			// Simulate receiving enhanced prompt message
+			window.dispatchEvent(
+				new MessageEvent("message", {
+					data: {
+						type: "enhancedPrompt",
+						text: "Enhanced test prompt",
+					},
+				}),
+			)
+
+			// Verify fallback to setInputValue was used
 			expect(setInputValue).toHaveBeenCalledWith("Enhanced test prompt")
+		})
+
+		it("should not crash when textarea ref is not available", () => {
+			const setInputValue = vi.fn()
+
+			render(<ChatTextArea {...defaultProps} setInputValue={setInputValue} />)
+
+			// Simulate receiving enhanced prompt message when textarea ref might not be ready
+			expect(() => {
+				window.dispatchEvent(
+					new MessageEvent("message", {
+						data: {
+							type: "enhancedPrompt",
+							text: "Enhanced test prompt",
+						},
+					}),
+				)
+			}).not.toThrow()
 		})
 	})
 

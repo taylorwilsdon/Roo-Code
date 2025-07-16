@@ -126,6 +126,7 @@
 	},
 	"addImages": "Tambahkan gambar ke pesan",
 	"sendMessage": "Kirim pesan",
+	"stopTts": "Hentikan text-to-speech",
 	"typeMessage": "Ketik pesan...",
 	"typeTask": "Bangun, cari, tanya sesuatu",
 	"addContext": "@ untuk menambah konteks, / untuk ganti mode",
@@ -136,6 +137,7 @@
 	"separator": "Pemisah",
 	"edit": "Edit...",
 	"forNextMode": "untuk mode selanjutnya",
+	"forPreviousMode": "untuk mode sebelumnya",
 	"apiRequest": {
 		"title": "Permintaan API",
 		"failed": "Permintaan API Gagal",
@@ -207,7 +209,8 @@
 	"codebaseSearch": {
 		"wantsToSearch": "Roo ingin mencari codebase untuk <code>{{query}}</code>:",
 		"wantsToSearchWithPath": "Roo ingin mencari codebase untuk <code>{{query}}</code> di <code>{{path}}</code>:",
-		"didSearch": "Ditemukan {{count}} hasil untuk <code>{{query}}</code>:",
+		"didSearch_one": "Ditemukan 1 hasil",
+		"didSearch_other": "Ditemukan {{count}} hasil",
 		"resultTooltip": "Skor kemiripan: {{score}} (klik untuk membuka file)"
 	},
 	"commandOutput": "Output Perintah",
@@ -300,7 +303,7 @@
 		}
 	},
 	"systemPromptWarning": "PERINGATAN: Override system prompt kustom aktif. Ini dapat merusak fungsionalitas secara serius dan menyebabkan perilaku yang tidak terduga.",
-	"profileViolationWarning": "Profil saat ini melanggar pengaturan organisasi kamu",
+	"profileViolationWarning": "Profil saat ini tidak kompatibel dengan pengaturan organisasi kamu",
 	"shellIntegration": {
 		"title": "Peringatan Eksekusi Perintah",
 		"description": "Perintah kamu dijalankan tanpa integrasi shell terminal VSCode. Untuk menekan peringatan ini kamu bisa menonaktifkan integrasi shell di bagian <strong>Terminal</strong> dari <settingsLink>pengaturan Roo Code</settingsLink> atau troubleshoot integrasi terminal VSCode menggunakan link di bawah.",
